@@ -1,26 +1,33 @@
 import { View, StyleSheet, ViewProps, SafeAreaView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from '../context/ThemeContext';
 
 interface BaseScreenProps extends ViewProps {
   children: React.ReactNode;
   withPadding?: boolean;
 }
 
-export default function BaseScreen({ 
-  children, 
+export default function BaseScreen({
+  children,
   withPadding = true,
   style,
-  ...props 
+  ...props
 }: BaseScreenProps) {
+  const { colors, theme } = useTheme();
+  console.log('theme: ', theme);
+
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <StatusBar style="dark" />
-      <View 
+    <SafeAreaView
+      style={[styles.safeArea, { backgroundColor: colors.background }]}
+    >
+      <StatusBar style={theme === 'light' ? 'dark' : 'light'} />
+      <View
         style={[
           styles.container,
           withPadding && styles.padding,
-          style
-        ]} 
+          style,
+          { backgroundColor: colors.background },
+        ]}
         {...props}
       >
         {children}
@@ -31,14 +38,12 @@ export default function BaseScreen({
 
 const styles = StyleSheet.create({
   safeArea: {
-        flex: 1,
-    backgroundColor: '#fff',
+    flex: 1,
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
   },
   padding: {
     padding: 20,
