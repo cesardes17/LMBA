@@ -2,40 +2,35 @@ import { useEffect } from 'react';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/context/authContext';
 import { useUserContext } from '@/src/context/userContext';
-import { ActivityIndicator, View, Text } from 'react-native';
 import PageContainer from '@/src/components/layout/PageContainer';
 import PerfilScreen from '@/src/screens/user/PerfilScreen';
+import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
 
 export default function PerfilHelper() {
-  const { authUser, authloading } = useAuth();
+  const { authUser, authloading, logoutInProgress } = useAuth();
   const { usuario, loading } = useUserContext();
   const router = useRouter();
 
   useEffect(() => {
-    if (authloading || loading) return;
+    if (authloading || loading || logoutInProgress) return;
 
     if (!authUser) {
       router.replace('/(auth)/login');
     } else if (!usuario) {
       router.replace('/(auth)/completar-perfil');
     }
-  }, [authUser, authloading, usuario, loading, router]);
+  }, [authUser, authloading, usuario, loading, logoutInProgress, router]);
 
   if (!authUser || !usuario) {
     return null;
   }
 
   if (authloading || loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Cargando...</Text>
-        <ActivityIndicator size='large' color='#0000ff' />
-      </View>
-    );
+    return <StyledActivityIndicator message='Cargando...' />;
   }
 
   return (
-    <PageContainer title='Perfil' showBackButton={false} backLabel='I'>
+    <PageContainer>
       <PerfilScreen />
     </PageContainer>
   );

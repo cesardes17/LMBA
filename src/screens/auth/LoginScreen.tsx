@@ -1,20 +1,17 @@
 import React from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import StyledButton from '../../components/common/StyledButton';
 import { router } from 'expo-router';
 import FormikLoginForm from '@/src/components/forms/auth/FormikLoginForm';
+import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
+import StyledText from '@/src/components/common/StyledText';
 
 export default function LoginScreen() {
   const [isLoading, setIsLoading] = React.useState(false);
 
   if (isLoading) {
-    return (
-      <View>
-        <Text>Cargando...</Text>
-        <ActivityIndicator size='large' color='#0000ff' />
-      </View>
-    );
+    return <StyledActivityIndicator message='Cargando...' />;
   }
 
   return (
@@ -23,7 +20,9 @@ export default function LoginScreen() {
 
       <View style={styles.separator} />
 
-      <Text style={{ marginBottom: 16 }}>¿No tienes una cuenta?</Text>
+      <StyledText style={{ marginBottom: 16 }}>
+        ¿No tienes una cuenta?
+      </StyledText>
 
       <StyledButton
         title='Registrarse'

@@ -1,6 +1,8 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTheme } from '@/src/hooks/useTheme';
+import StyledText from './StyledText';
 
 interface SelectableCardProps {
   id: string;
@@ -17,22 +19,11 @@ export const SelectableCard: React.FC<SelectableCardProps> = ({
   isSelected,
   onSelect,
 }) => {
-  const cardStyle = isSelected
-    ? {
-        background: '#E0F7FA',
-        border: '#00ACC1',
-        title: '#007C91',
-        description: '#004D5A',
-        checkIcon: '#00ACC1',
-      }
-    : {
-        background: '#fff',
-        border: '#ccc',
-        title: '#000',
-        description: '#555',
-        checkIcon: '#ccc',
-      };
+  const { theme } = useTheme();
 
+  const cardStyle = isSelected
+    ? theme.selectableCard.selected
+    : theme.selectableCard.default;
   return (
     <Pressable
       onPress={() => onSelect(id)}
@@ -45,17 +36,20 @@ export const SelectableCard: React.FC<SelectableCardProps> = ({
       ]}
     >
       <View style={styles.content}>
-        <Text style={[styles.title, { color: cardStyle.title }]}>{title}</Text>
-        <Text style={[styles.description, { color: cardStyle.description }]}>
+        <StyledText style={[styles.title, { color: cardStyle.title }]}>
+          {title}
+        </StyledText>
+        <StyledText
+          style={[styles.description, { color: cardStyle.description }]}
+        >
           {description}
-        </Text>
+        </StyledText>
       </View>
       {isSelected && (
         <MaterialCommunityIcons
           name='check-circle'
           size={24}
-          color={cardStyle.checkIcon}
-          style={styles.icon}
+          color={cardStyle.checkIcon} // ← Ya no debería dar error
         />
       )}
     </Pressable>

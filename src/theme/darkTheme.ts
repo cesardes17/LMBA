@@ -1,0 +1,54 @@
+// src/theme/darkTheme.ts
+import { colors } from './colors';
+import { baseButtonStyles, baseInputStyles } from './baseStyles';
+import { SelectableCardStyles } from './theme';
+
+export const darkTheme = {
+  backgroundColor: colors.gray900,
+  surfaceColor: colors.gray800,
+  cardBackground: colors.gray800,
+  backgroundNavigation: colors.primary950,
+
+  textPrimary: colors.white,
+  textSecondary: colors.gray300,
+  textDisabled: colors.gray600,
+
+  primary: colors.primary600,
+  primaryLight: colors.primary700,
+  primaryDark: colors.primary400,
+
+  separator: colors.gray700,
+
+  button: baseButtonStyles,
+  input: baseInputStyles,
+
+  border: colors.gray700,
+  divider: colors.gray700,
+
+  success: colors.success,
+  warning: colors.warning,
+  error: colors.error,
+  info: colors.info,
+
+  activeElement: colors.primary300,
+  inactiveElement: colors.primary700,
+
+  selectableCard: {
+    default: {
+      background: colors.gray800,
+      border: colors.gray700,
+      title: colors.white,
+      description: colors.gray300,
+      checkIcon: undefined,
+    },
+    selected: {
+      background: colors.primary900,
+      border: colors.primary400,
+      title: colors.primary200,
+      description: colors.primary300,
+      checkIcon: colors.primary300,
+    },
+  } satisfies SelectableCardStyles,
+};
+
+export type Theme = typeof darkTheme;

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
+import { useTheme } from '@/src/hooks/useTheme';
+import StyledText from './StyledText';
 
 interface StyledButtonProps {
   title: string;
@@ -14,41 +16,17 @@ export default function StyledButton({
   disabled = false,
   variant = 'default',
 }: StyledButtonProps) {
+  const { theme } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
 
   const getButtonStyle = () => {
-    if (disabled) {
-      return {
-        backgroundColor: '#e0e0e0',
-        borderColor: '#c0c0c0',
-        textColor: '#888',
-      };
-    }
-
-    if (variant === 'outline') {
-      return {
-        backgroundColor: 'transparent',
-        borderColor: '#007AFF',
-        textColor: '#007AFF',
-      };
-    }
-
-    if (isPressed) {
-      return {
-        backgroundColor: '#005BBB',
-        borderColor: '#005BBB',
-        textColor: '#fff',
-      };
-    }
-
-    return {
-      backgroundColor: '#007AFF',
-      borderColor: '#007AFF',
-      textColor: '#fff',
-    };
+    if (disabled) return theme.button.disabled;
+    if (isPressed) return theme.button.active;
+    if (variant === 'outline') return theme.button.outline;
+    return theme.button.default;
   };
 
-  const stylesByState = getButtonStyle();
+  const buttonStyle = getButtonStyle();
 
   return (
     <Pressable
@@ -59,16 +37,25 @@ export default function StyledButton({
       style={[
         styles.button,
         {
-          backgroundColor: stylesByState.backgroundColor,
-          borderColor: stylesByState.borderColor,
+          backgroundColor: buttonStyle.background,
+          borderColor: buttonStyle.border,
           borderWidth: variant === 'outline' ? 2 : 1,
         },
-        isPressed && !disabled && styles.shadow,
+        // Aplica sombra si está activa y se ha definido una sombra en el tema
+        isPressed && !disabled && buttonStyle.shadow
+          ? {
+              shadowColor: buttonStyle.shadow,
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 4,
+              elevation: 5,
+            }
+          : null,
       ]}
     >
-      <Text style={[styles.text, { color: stylesByState.textColor }]}>
+      <StyledText style={[styles.text, { color: buttonStyle.text }]}>
         {title}
-      </Text>
+      </StyledText>
     </Pressable>
   );
 }
@@ -85,12 +72,5 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontWeight: '600',
-  },
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 5,
   },
 });

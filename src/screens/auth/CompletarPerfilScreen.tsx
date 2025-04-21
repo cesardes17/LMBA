@@ -1,12 +1,14 @@
+import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
+import StyledText from '@/src/components/common/StyledText';
 import FormikCompletarPerfilForm from '@/src/components/forms/auth/FormikCompletarPerfilForm';
 import { useAuth } from '@/src/context/authContext';
 import { useUserContext } from '@/src/context/userContext';
 import { router } from 'expo-router';
 import React, { useState, useEffect } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
+import { View } from 'react-native';
 
 export default function CompletarPerfilScreen() {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { usuario, loading } = useUserContext();
   const { authUser, authloading } = useAuth();
 
@@ -22,17 +24,14 @@ export default function CompletarPerfilScreen() {
   }
 
   if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Creando Perfil...</Text>
-        <ActivityIndicator size='large' color='#0000ff' />
-      </View>
-    );
+    return <StyledActivityIndicator message='Creando Perfil...' />;
   }
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Bienvenido, Completa el registro: {authUser.email}</Text>
+      <StyledText>
+        Bienvenido, Completa el registro: {authUser.email}
+      </StyledText>
       <FormikCompletarPerfilForm setLoading={setIsLoading} />
     </View>
   );

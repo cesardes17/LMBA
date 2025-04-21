@@ -1,39 +1,60 @@
 import { Usuario } from '@/src/types/models/Usuario';
-import { Text, View } from 'react-native';
-
+import { View, StyleSheet } from 'react-native';
+import { useTheme } from '@/src/hooks/useTheme';
+import StyledText from '../common/StyledText';
 interface PerfilCardProps {
   usuario: Usuario | null;
 }
 
 export default function PerfilCard({ usuario }: PerfilCardProps) {
+  const { theme } = useTheme();
+
   return (
     <View
-      style={{
-        marginVertical: 16,
-        padding: 16,
-        borderRadius: 8,
-        borderWidth: 1,
-        borderColor: '#ccc',
-        backgroundColor: '#f9f9f9',
-        width: '90%',
-      }}
+      style={[
+        styles.card,
+        {
+          backgroundColor: theme.cardBackground,
+          borderColor: theme.border,
+        },
+      ]}
     >
       {usuario ? (
         <>
-          <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8 }}>
+          <StyledText style={[styles.title, { color: theme.textPrimary }]}>
             Información del perfil:
-          </Text>
-          <Text>Nombre: {usuario.nombre}</Text>
-          <Text>Apellidos: {usuario.apellidos}</Text>
-          <Text>Rol ID: {usuario.rol_id}</Text>
+          </StyledText>
+          <StyledText style={{ color: theme.textPrimary }}>
+            Nombre: {usuario.nombre}
+          </StyledText>
+          <StyledText style={{ color: theme.textPrimary }}>
+            Apellidos: {usuario.apellidos}
+          </StyledText>
+          <StyledText style={{ color: theme.textPrimary }}>
+            Rol ID: {usuario.rol_id}
+          </StyledText>
         </>
       ) : (
-        <>
-          <Text style={{ fontWeight: 'bold', fontSize: 16, marginBottom: 8 }}>
-            No hay información del perfil.
-          </Text>
-        </>
+        <StyledText style={[styles.title, { color: theme.textPrimary }]}>
+          No hay información del perfil.
+        </StyledText>
       )}
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    marginVertical: 16,
+    padding: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+});

@@ -1,15 +1,12 @@
 import PageContainer from '@/src/components/layout/PageContainer';
+import HeaderConfig from '@/src/components/navigation/HeaderConfig';
 import LoginScreen from '@/src/screens/auth/LoginScreen';
 import { View } from 'react-native';
 
 export default function LoginPage() {
   return (
-    <PageContainer
-      title='Inicia Sesión'
-      showBackButton={true}
-      backLabel='Inicio'
-      backRoute='/'
-    >
+    <PageContainer>
+      <HeaderConfig title='Inicia Sesión' />
       <View
         style={{
           flex: 1,

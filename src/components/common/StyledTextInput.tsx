@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import {
-  TextInput,
-  TextInputProps,
-  StyleSheet,
-  View,
-  Text,
-} from 'react-native';
+import { TextInput, TextInputProps, StyleSheet, View } from 'react-native';
+import StyledText from './StyledText';
 
 interface StyledTextInputProps extends TextInputProps {
   error?: string;
@@ -93,7 +88,7 @@ export default function StyledTextInput({
         editable={editable}
         {...rest}
       />
-      {error && <Text style={[styles.errorText]}>{error}</Text>}
+      {error && <StyledText style={[styles.errorText]}>{error}</StyledText>}
     </View>
   );
 }

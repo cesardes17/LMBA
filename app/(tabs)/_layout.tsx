@@ -1,6 +1,7 @@
 import { Tabs } from 'expo-router';
 import { useAuth } from '@/src/context/authContext';
 import { useUserContext } from '@/src/context/userContext';
+import { useTheme } from '@/src/hooks/useTheme';
 import {
   HomeIcon,
   PerfilIcon,
@@ -11,9 +12,31 @@ import {
 export default function TabsLayout() {
   const { authUser } = useAuth();
   const { usuario } = useUserContext();
+  const { theme } = useTheme();
+
+  const showLogin = !authUser;
+  const showCompletarPerfil = authUser && !usuario;
 
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarStyle: {
+          backgroundColor: theme.backgroundNavigation,
+          borderTopColor: theme.border,
+        },
+        tabBarActiveTintColor: theme.activeElement,
+        tabBarInactiveTintColor: theme.inactiveElement,
+        headerStyle: {
+          backgroundColor: theme.backgroundColor,
+        },
+        headerTitleStyle: {
+          color: theme.textPrimary,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
+      }}
+    >
       <Tabs.Screen
         name='index'
         options={{
@@ -27,11 +50,15 @@ export default function TabsLayout() {
       <Tabs.Screen
         name='perfil-helper'
         options={{
-          title: !authUser ? 'Login' : !usuario ? 'Completar perfil' : 'Perfil',
+          title: showLogin
+            ? 'Login'
+            : showCompletarPerfil
+              ? 'Completar perfil'
+              : 'Perfil',
           tabBarIcon: ({ color, size }) =>
-            !authUser ? (
+            showLogin ? (
               <LoginIcon color={color} size={size} />
-            ) : !usuario ? (
+            ) : showCompletarPerfil ? (
               <CompletarPerfilIcon color={color} size={size} />
             ) : (
               <PerfilIcon color={color} size={size} />

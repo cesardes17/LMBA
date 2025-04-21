@@ -1,10 +1,13 @@
 // src/context/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { AuthService } from '@/src/services/authService';
+import { router } from 'expo-router';
+
 interface AuthContextProps {
   authUser: any;
   session: any;
   authloading: boolean;
+  logoutInProgress: boolean;
   login: (email: string, password: string) => Promise<any>;
   register: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
@@ -16,6 +19,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authUser, setAuthUser] = useState<any>(null);
   const [session, setSession] = useState<any>(null);
   const [authloading, setAuthLoading] = useState(true);
+  const [logoutInProgress, setLogoutInProgress] = useState(false);
 
   const login = async (email: string, password: string) => {
     const res = await AuthService.login({ email, password });
@@ -38,9 +42,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logout = async () => {
+    setLogoutInProgress(true);
     await AuthService.logout();
     setAuthUser(null);
     setSession(null);
+    setLogoutInProgress(false);
+
+    // 🚀 Redirige tú manualmente
+    router.replace('/');
   };
 
   useEffect(() => {
@@ -56,7 +65,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ authUser, session, authloading, login, register, logout }}
+      value={{
+        authUser,
+        session,
+        authloading,
+        login,
+        register,
+        logout,
+        logoutInProgress,
+      }}
     >
       {children}
     </AuthContext.Provider>

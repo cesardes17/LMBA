@@ -1,14 +1,13 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PageContainer from '@/src/components/layout/PageContainer';
+import StyledText from '@/src/components/common/StyledText';
 
 export default function TabsIndex() {
-  const title = 'Inicio';
-
   return (
-    <PageContainer title={title}>
+    <PageContainer>
       <View style={styles.center}>
-        <Text>Estas en el index de tabs</Text>
+        <StyledText>Estas en el index de tabs</StyledText>
       </View>
     </PageContainer>
   );

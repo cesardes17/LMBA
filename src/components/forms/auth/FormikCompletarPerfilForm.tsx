@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Formik } from 'formik';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import StyledButton from '../../common/StyledButton';
 import FormikTextInput from '../inputs/FomrikTextInput';
 import { CompletarPerfilSchema } from '../../../schemas/auth';
@@ -16,6 +16,7 @@ import {
 import { PosicionPreferida } from '@/src/types/enums/Posicion';
 import { POSICIONES_OPCIONES } from '@/src/constants/posiciones';
 import { useUserContext } from '@/src/context/userContext';
+import StyledText from '../../common/StyledText';
 
 interface FormikSetupProfileFormProps {
   setLoading: (loading: boolean) => void;
@@ -122,7 +123,7 @@ export default function FormikCompletarPerfilForm({
   };
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return <StyledText>Error: {error.message}</StyledText>;
   }
 
   return (
@@ -135,7 +136,9 @@ export default function FormikCompletarPerfilForm({
         <View style={{ paddingHorizontal: 16 }}>
           {step === 1 && (
             <>
-              <Text style={{ marginBottom: 16 }}>Selecciona tu rol</Text>
+              <StyledText style={{ marginBottom: 16 }}>
+                Selecciona tu rol
+              </StyledText>
               <SelectableCardGroup
                 options={roles}
                 selectedId={selectedRole}
@@ -153,7 +156,9 @@ export default function FormikCompletarPerfilForm({
           )}
           {step === 2 && (
             <>
-              <Text style={{ marginBottom: 16 }}>Información personal</Text>
+              <StyledText style={{ marginBottom: 16 }}>
+                Información personal
+              </StyledText>
               <FormikTextInput name='nombre' placeholder='Nombre' />
               <FormikTextInput name='apellidos' placeholder='Apellidos' />
               <View
@@ -184,7 +189,9 @@ export default function FormikCompletarPerfilForm({
           )}
           {step === 3 && (
             <>
-              <Text style={{ marginBottom: 16 }}>Información del jugador</Text>
+              <StyledText style={{ marginBottom: 16 }}>
+                Información del jugador
+              </StyledText>
               <FormikTextInput
                 name='altura_cm'
                 placeholder='Altura (cm)'
@@ -229,9 +236,9 @@ export default function FormikCompletarPerfilForm({
           )}
           {step === 4 && (
             <>
-              <Text style={{ marginBottom: 16 }}>
+              <StyledText style={{ marginBottom: 16 }}>
                 ¿Cual es tu posicion preferida?
-              </Text>
+              </StyledText>
               <SelectableCardGroup
                 options={POSICIONES_OPCIONES}
                 selectedId={selectedPosition}
