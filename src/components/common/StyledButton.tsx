@@ -7,7 +7,7 @@ interface StyledButtonProps {
   title: string;
   onPress: () => void;
   disabled?: boolean;
-  variant?: 'default' | 'outline';
+  variant?: 'default' | 'outline' | 'danger';
 }
 
 export default function StyledButton({
@@ -21,6 +21,10 @@ export default function StyledButton({
 
   const getButtonStyle = () => {
     if (disabled) return theme.button.disabled;
+    if (variant === 'danger') {
+      if (isPressed) return theme.button.dangerActive;
+      return theme.button.danger;
+    }
     if (isPressed) return theme.button.active;
     if (variant === 'outline') return theme.button.outline;
     return theme.button.default;

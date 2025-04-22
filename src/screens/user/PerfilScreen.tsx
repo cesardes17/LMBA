@@ -33,19 +33,18 @@ export default function PerfilScreen() {
   return (
     <View style={{ padding: 16, gap: 24 }}>
       <PerfilCard usuario={usuario} />
-
+      <SelectableCardGroup
+        options={themeOptions}
+        selectedId={themePreference}
+        onSelect={(id) => setThemePreference(id as 'light' | 'dark' | 'system')}
+      />
       <StyledButton
         onPress={async () => {
           await logout();
           router.replace('/');
         }}
         title='Cerrar Sesión'
-      />
-
-      <SelectableCardGroup
-        options={themeOptions}
-        selectedId={themePreference}
-        onSelect={(id) => setThemePreference(id as 'light' | 'dark' | 'system')}
+        variant='danger'
       />
     </View>
   );

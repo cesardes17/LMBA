@@ -28,6 +28,17 @@ export const baseButtonStyles = {
     text: colors.primary600,
     border: colors.primary600,
   },
+  danger: {
+    background: colors.error,
+    text: colors.white,
+    border: colors.error,
+  },
+  dangerActive: {
+    background: colors.errorStyle.text, // Un rojo más intenso, puedes ajustar el color si lo prefieres
+    text: colors.white,
+    border: colors.errorStyle.border,
+    shadow: colors.errorStyle.border,
+  },
 };
 
 export const baseInputStyles = {
