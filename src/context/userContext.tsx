@@ -27,9 +27,9 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
   const [error, setError] = useState<Error | null>(null);
 
   const fetchUsuario = useCallback(async () => {
-    if (!authUser?.email) return;
+    if (!authUser?.id) return;
     setLoading(true);
-    const { data, error } = await usuarioService.getByEmail(authUser.email);
+    const { data, error } = await usuarioService.getByUUID(authUser.id);
     if (error) {
       setError(error);
       setUsuario(null);
@@ -38,7 +38,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
       setError(null);
     }
     setLoading(false);
-  }, [authUser?.email]);
+  }, [authUser?.id]);
 
   useEffect(() => {
     if (authUser?.email) fetchUsuario();

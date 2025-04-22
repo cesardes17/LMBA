@@ -187,4 +187,32 @@ export const databaseService = {
       DatabaseSupabase.getByField<T>(table, field, value)
     );
   },
+
+  /**
+   * Llama a una función RPC definida en la base de datos
+   * @param fnName - Nombre de la función RPC
+   * @param params - Parámetros para la función RPC
+   * @returns Promesa que resuelve a un objeto ServiceResponse con los datos, error y estado
+   * @template T - Tipo genérico de los datos a obtener
+   * @example
+   * // Llamar a una función RPC llamada 'mi_funcion' con parámetros
+   * const { data, error, status } = await databaseService.callRpc<MiTipo>('mi_funcion', { param1: valor });
+   */
+  async callRpc<T, P = any>(
+    fnName: string,
+    params?: P
+  ): Promise<ServiceResponse<T>> {
+    // Adapt the result to always be an array
+    const rpcPromise = DatabaseSupabase.callRpc<T, P>(fnName, params).then(
+      ({ data, error }) => ({
+        data: Array.isArray(data)
+          ? data
+          : data !== null && data !== undefined
+            ? [data]
+            : null,
+        error,
+      })
+    );
+    return handleArrayResponse<T>(rpcPromise);
+  },
 };

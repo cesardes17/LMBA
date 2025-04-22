@@ -9,18 +9,34 @@ export const usuarioService = {
     email: string
   ): Promise<{ data: Usuario | null; error: Error | null }> {
     try {
-      const { data, error, status } = await databaseService.getById(
-        tabla,
-        'email',
-        email
-      );
+      const { data, error, status } = await databaseService.callRpc<
+        Usuario,
+        { p_email: string }
+      >('get_usuario_with_rol_by_email', { p_email: email });
       if (status === 'error' && error) {
         throw new Error(error.message);
       }
       if (!data) {
         return { data: null, error: null };
       }
-      return { data: data as Usuario, error: null };
+      return { data: data[0] as Usuario, error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  },
+  async getByUUID(uuid: string) {
+    try {
+      const { data, error, status } = await databaseService.callRpc<
+        Usuario,
+        { p_usuario_id: string }
+      >('get_usuario_with_rol_by_uuid', { p_usuario_id: uuid });
+      if (status === 'error' && error) {
+        throw new Error(error.message);
+      }
+      if (!data) {
+        return { data: null, error: null };
+      }
+      return { data: data[0] as Usuario, error: null };
     } catch (error) {
       return { data: null, error: error as Error };
     }

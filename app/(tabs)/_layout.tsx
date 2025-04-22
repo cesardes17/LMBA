@@ -7,6 +7,9 @@ import {
   PerfilIcon,
   LoginIcon,
   CompletarPerfilIcon,
+  CalendarioIcon,
+  ClasificacionIcon,
+  NavegacionIcon,
 } from '@/src/constants/icons';
 
 export default function TabsLayout() {
@@ -38,6 +41,24 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
+        name='calendario'
+        options={{
+          title: 'Calendario',
+          tabBarIcon: ({ color, size }) => (
+            <CalendarioIcon color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name='clasificacion'
+        options={{
+          title: 'Clasificación',
+          tabBarIcon: ({ color, size }) => (
+            <ClasificacionIcon color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name='index'
         options={{
           title: 'Inicio',
@@ -63,6 +84,15 @@ export default function TabsLayout() {
             ) : (
               <PerfilIcon color={color} size={size} />
             ),
+        }}
+      />
+      <Tabs.Screen
+        name='navigation'
+        options={{
+          title: 'Más',
+          tabBarIcon: ({ color, size }) => (
+            <NavegacionIcon color={color} size={size} />
+          ),
         }}
       />
     </Tabs>

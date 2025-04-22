@@ -31,7 +31,7 @@ export default function PerfilCard({ usuario }: PerfilCardProps) {
             Apellidos: {usuario.apellidos}
           </StyledText>
           <StyledText style={{ color: theme.textPrimary }}>
-            Rol ID: {usuario.rol_id}
+            Rol: {usuario.rol_nombre}
           </StyledText>
         </>
       ) : (

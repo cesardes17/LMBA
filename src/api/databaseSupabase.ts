@@ -71,4 +71,12 @@ export const DatabaseSupabase = {
       .eq(field, value);
     return { data, error };
   },
+  // Llamar a una función RPC de Supabase
+  async callRpc<T, P = any>(
+    fnName: string,
+    params?: P
+  ): Promise<DBResponse<T>> {
+    const { data, error } = await supabase.rpc(fnName, params);
+    return { data, error };
+  },
 };

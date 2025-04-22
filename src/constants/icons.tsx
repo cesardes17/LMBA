@@ -25,3 +25,15 @@ export const CompletarPerfilIcon = ({ size = 24, color }: IconProps) => {
 export const LoginIcon = ({ size = 24, color }: IconProps) => {
   return <SimpleLineIcons name='login' size={size} color={color} />;
 };
+
+export const CalendarioIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome5 name='calendar-alt' size={size} color={color} />;
+};
+
+export const ClasificacionIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome5 name='trophy' size={size} color={color} />;
+};
+
+export const NavegacionIcon = ({ size = 24, color }: IconProps) => {
+  return <Entypo name='menu' size={size} color={color} />;
+};

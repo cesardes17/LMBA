@@ -8,6 +8,7 @@ export interface Usuario {
   apellidos: string;
   email: string;
   rol_id: number;
+  rol_nombre: string;
   creado_en: string;
   activo: boolean;
 }
