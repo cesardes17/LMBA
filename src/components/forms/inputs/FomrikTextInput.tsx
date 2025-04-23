@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import StyledTextInput from '../../common/StyledTextInput';
+import StyledText from '../../common/StyledText';
 import { useField } from 'formik';
-import { TextInputProps } from 'react-native';
+import { TextInputProps, View } from 'react-native';
 
 interface FormikTextInputProps
   extends Omit<TextInputProps, 'value' | 'onChangeText' | 'onBlur'> {
@@ -18,18 +19,31 @@ export default function FormikTextInput({
   const showError = meta.touched && !isActive && meta.error;
 
   return (
-    <StyledTextInput
-      value={field.value}
-      onChangeText={(value) => {
-        helpers.setValue(value);
-        setIsActive(true);
-      }}
-      onBlur={() => {
-        setIsActive(false);
-        helpers.setTouched(true);
-      }}
-      error={showError ? meta.error : undefined}
-      {...props}
-    />
+    <View>
+      <StyledTextInput
+        value={field.value}
+        onChangeText={(value) => {
+          helpers.setValue(value);
+          setIsActive(true);
+        }}
+        onBlur={() => {
+          setIsActive(false);
+          helpers.setTouched(true);
+        }}
+        {...props}
+      />
+      {showError ? (
+        <StyledText
+          style={{
+            color: '#d32f2f',
+            fontSize: 12,
+            marginLeft: 16,
+            marginTop: 4,
+          }}
+        >
+          {meta.error}
+        </StyledText>
+      ) : null}
+    </View>
   );
 }

@@ -8,6 +8,7 @@ interface StyledButtonProps {
   onPress: () => void;
   disabled?: boolean;
   variant?: 'default' | 'outline' | 'danger';
+  size?: 'small' | 'default' | 'large'; // Nueva propiedad para el tamaño
 }
 
 export default function StyledButton({
@@ -15,6 +16,7 @@ export default function StyledButton({
   onPress,
   disabled = false,
   variant = 'default',
+  size = 'default', // Valor por defecto
 }: StyledButtonProps) {
   const { theme } = useTheme();
   const [isPressed, setIsPressed] = useState(false);
@@ -32,6 +34,24 @@ export default function StyledButton({
 
   const buttonStyle = getButtonStyle();
 
+  const sizeStyles = {
+    small: {
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      minWidth: 100,
+    },
+    default: {
+      paddingVertical: 12,
+      paddingHorizontal: 24,
+      minWidth: 150,
+    },
+    large: {
+      paddingVertical: 16,
+      paddingHorizontal: 32,
+      minWidth: 200,
+    },
+  };
+
   return (
     <Pressable
       onPress={disabled ? undefined : onPress}
@@ -40,12 +60,12 @@ export default function StyledButton({
       disabled={disabled}
       style={[
         styles.button,
+        sizeStyles[size], // Aplica estilos según el tamaño
         {
           backgroundColor: buttonStyle.background,
           borderColor: buttonStyle.border,
           borderWidth: variant === 'outline' ? 2 : 1,
         },
-        // Aplica sombra si está activa y se ha definido una sombra en el tema
         isPressed && !disabled && buttonStyle.shadow
           ? {
               shadowColor: buttonStyle.shadow,
@@ -66,12 +86,9 @@ export default function StyledButton({
 
 const styles = StyleSheet.create({
   button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
     borderRadius: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 150,
   },
   text: {
     fontSize: 16,

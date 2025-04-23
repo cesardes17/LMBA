@@ -79,4 +79,16 @@ export const DatabaseSupabase = {
     const { data, error } = await supabase.rpc(fnName, params);
     return { data, error };
   },
+  // Obtener registros con relaciones (join)
+  async getWithRelations<T>(
+    table: string,
+    relationQuery: string
+  ): Promise<DBResponse<T[]>> {
+    const { data, error } = await supabase.from(table).select(relationQuery);
+    // If there is an error, return null data
+    if (error) {
+      return { data: null, error };
+    }
+    return { data: data as T[], error: null };
+  },
 };

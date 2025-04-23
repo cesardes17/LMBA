@@ -215,4 +215,19 @@ export const databaseService = {
     );
     return handleArrayResponse<T>(rpcPromise);
   },
+
+  /**
+   * Obtiene registros de una tabla junto con datos relacionados usando join
+   * @param table - Nombre de la tabla principal
+   * @param relationQuery - Query de relaciones (ej: '*, roles(*)')
+   * @returns Promesa con los datos y error
+   */
+  async getWithRelations<T>(
+    table: string,
+    relationQuery: string
+  ): Promise<ServiceResponse<T>> {
+    return handleArrayResponse(
+      DatabaseSupabase.getWithRelations<T>(table, relationQuery)
+    );
+  },
 };

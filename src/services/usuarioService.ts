@@ -82,4 +82,60 @@ export const usuarioService = {
       return { error: error as Error, status: 'error' };
     }
   },
+  async getAllUsuarios(): Promise<{
+    data: Usuario[] | null;
+    error: Error | null;
+  }> {
+    try {
+      const relationQuery = '*, roles(nombre)';
+      const { data, error, status } =
+        await databaseService.getWithRelations<any>('usuarios', relationQuery);
+      if (status === 'error' && error) {
+        throw new Error(error.message);
+      }
+      // Mapear para devolver un array de Usuario con rol_nombre
+      const usuarios: Usuario[] = (data || []).map((u: any) => ({
+        ...u,
+        rol_nombre: u.roles?.nombre || '',
+      }));
+      return { data: usuarios, error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  },
+  async updateBanStatus(id: string, banned: boolean) {
+    try {
+      const { data, error, status } = await databaseService.updateById(
+        tabla,
+        id,
+        {
+          activo: banned,
+        }
+      );
+      if (status === 'error' && error) {
+        throw new Error(error.message);
+      }
+      return { data: data, error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  },
+
+  async updateUsuarioRol(id: string, rol_id: number) {
+    try {
+      const { data, error, status } = await databaseService.updateById(
+        tabla,
+        id,
+        {
+          rol_id: rol_id,
+        }
+      );
+      if (status === 'error' && error) {
+        throw new Error(error.message);
+      }
+      return { data: data, error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  },
 };

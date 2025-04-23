@@ -24,4 +24,22 @@ export const rolesService = {
       return { data: null, error: error as Error };
     }
   },
+
+  async getAllRoles(): Promise<{
+    data: Rol[] | null;
+    error: Error | null;
+  }> {
+    try {
+      const { data, error, status } = await databaseService.getAll<Rol>(tabla);
+      if (status === 'error' && error) {
+        throw new Error(error.message);
+      }
+      if (!data) {
+        return { data: null, error: null };
+      }
+      return { data: data, error: null };
+    } catch (error) {
+      return { data: null, error: error as Error };
+    }
+  },
 };

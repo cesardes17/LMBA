@@ -1,24 +1,19 @@
 import React, { useState } from 'react';
 import { TextInput, TextInputProps, StyleSheet, View } from 'react-native';
-import StyledText from './StyledText';
-
-interface StyledTextInputProps extends TextInputProps {
-  error?: string;
-}
+import { useTheme } from '@/src/hooks/useTheme';
 
 export default function StyledTextInput({
-  error,
   editable = true,
   style,
   onBlur,
   onFocus,
   ...rest
-}: StyledTextInputProps) {
+}: TextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
+  const { theme } = useTheme();
 
   const getInputState = () => {
     if (!editable) return 'disabled';
-    if (error) return 'error';
     if (isFocused) return 'focused';
     return 'default';
   };
@@ -38,57 +33,34 @@ export default function StyledTextInput({
   const getInputStyleByState = () => {
     switch (inputState) {
       case 'focused':
-        return {
-          backgroundColor: '#fff',
-          borderColor: '#007AFF',
-          color: '#000',
-          placeholderColor: '#aaa',
-        };
-      case 'error':
-        return {
-          backgroundColor: '#fff',
-          borderColor: '#FF3B30',
-          color: '#000',
-          placeholderColor: '#aaa',
-        };
+        return theme.input.focused;
       case 'disabled':
-        return {
-          backgroundColor: '#f0f0f0',
-          borderColor: '#ccc',
-          color: '#999',
-          placeholderColor: '#ccc',
-        };
+        return theme.input.disabled;
       default:
-        return {
-          backgroundColor: '#fff',
-          borderColor: '#ccc',
-          color: '#000',
-          placeholderColor: '#aaa',
-        };
+        return theme.input.default;
     }
   };
 
   const stateStyles = getInputStyleByState();
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <TextInput
         style={[
           styles.input,
           {
-            backgroundColor: stateStyles.backgroundColor,
-            borderColor: stateStyles.borderColor,
-            color: stateStyles.color,
+            backgroundColor: stateStyles.background,
+            borderColor: stateStyles.border,
+            color: stateStyles.text,
           },
           style,
         ]}
-        placeholderTextColor={stateStyles.placeholderColor}
+        placeholderTextColor={stateStyles.placeholder}
         onFocus={handleFocus}
         onBlur={handleBlur}
         editable={editable}
         {...rest}
       />
-      {error && <StyledText style={[styles.errorText]}>{error}</StyledText>}
     </View>
   );
 }
@@ -108,7 +80,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 12,
-    color: '#FF3B30',
     marginTop: 4,
     marginLeft: 16,
   },

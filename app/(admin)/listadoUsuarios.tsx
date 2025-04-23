@@ -1,0 +1,24 @@
+import PageContainer from '@/src/components/layout/PageContainer';
+import HeaderConfig from '@/src/components/navigation/HeaderConfig';
+import { useUserContext } from '@/src/context/userContext';
+import ListadoUsuariosScreen from '@/src/screens/admin/listadoUsuariosScreen';
+import { router } from 'expo-router';
+
+export default function ListadoUsuariosPage() {
+  const { usuario } = useUserContext();
+
+  if (
+    !usuario ||
+    (usuario.rol_nombre !== 'Organizador' &&
+      usuario.rol_nombre !== 'Coorganizador')
+  ) {
+    return router.replace('/');
+  }
+
+  return (
+    <PageContainer>
+      <HeaderConfig title='Listado de usuarios' />
+      <ListadoUsuariosScreen />
+    </PageContainer>
+  );
+}
