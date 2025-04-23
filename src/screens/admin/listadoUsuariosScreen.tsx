@@ -159,6 +159,10 @@ export default function ListadoUsuariosScreen() {
     }
   };
 
+  if (loadingInitial) {
+    return <StyledActivityIndicator />;
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <StyledTextInput
