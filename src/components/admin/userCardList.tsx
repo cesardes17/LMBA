@@ -6,14 +6,14 @@ import StyledText from '../common/StyledText';
 
 interface UsuarioCardProps {
   usuario: Usuario;
-  onEdit: (usuario: Usuario) => void;
-  onBan: (usuario: Usuario) => void;
+  onEditUser: (usuario: Usuario) => void;
+  onUpdateBanState: (usuario: Usuario) => void;
 }
 
 export const UserCardList: React.FC<UsuarioCardProps> = ({
   usuario,
-  onEdit,
-  onBan,
+  onEditUser,
+  onUpdateBanState,
 }) => {
   const { theme } = useTheme();
 
@@ -80,7 +80,7 @@ export const UserCardList: React.FC<UsuarioCardProps> = ({
               borderColor: theme.button.default.border,
             },
           ]}
-          onPress={() => onEdit(usuario)}
+          onPress={() => onEditUser(usuario)}
         >
           <StyledText
             style={[styles.buttonText, { color: theme.button.default.text }]}
@@ -100,7 +100,7 @@ export const UserCardList: React.FC<UsuarioCardProps> = ({
                 : theme.button.default.border,
             },
           ]}
-          onPress={() => onBan(usuario)}
+          onPress={() => onUpdateBanState(usuario)}
         >
           <StyledText
             style={[

@@ -1,6 +1,22 @@
 import { supabase } from './supabase/supabaseClient';
 import { PostgrestError } from '@supabase/supabase-js';
 
+type Operator = 'eq' | 'neq' | 'in' | 'not.in';
+
+interface Filter {
+  field: string;
+  operator: Operator;
+  value: any;
+}
+
+interface PaginatedOptions {
+  filters?: Filter[];
+  search?: string;
+  searchFields?: string[];
+  page: number;
+  limit: number;
+}
+
 export type DBResponse<T> = {
   data: T | null;
   error: PostgrestError | null;
@@ -90,5 +106,38 @@ export const DatabaseSupabase = {
       return { data: null, error };
     }
     return { data: data as T[], error: null };
+  },
+  // Obtener datos paginados
+  async getPaginatedData<T>(
+    table: string,
+    { filters = [], search, searchFields = [], page, limit }: PaginatedOptions
+  ): Promise<T[]> {
+    let query = supabase.from(table).select('*, roles(nombre)');
+
+    filters.forEach(({ field, operator, value }) => {
+      if (operator === 'in') {
+        query = query.in(field, value);
+      } else if (operator === 'not.in') {
+        const inString = `(${value.join(',')})`;
+        query = query.filter(field, 'not.in', inString);
+      } else {
+        query = query[operator](field, value);
+      }
+    });
+
+    if (search && searchFields.length > 0) {
+      const orString = searchFields
+        .map((f) => `${f}.ilike.%${search}%`)
+        .join(',');
+      query = query.or(orString);
+    }
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    const { data, error } = await query.range(from, to);
+
+    if (error) throw error;
+    return data as T[];
   },
 };

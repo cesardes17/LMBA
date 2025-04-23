@@ -3,7 +3,13 @@ import { Usuario } from '../types/models/Usuario';
 import { databaseService } from './databaseService';
 import { jugadorService } from './jugadorService';
 
+const rolesExcluidos: Record<number, number[]> = {
+  1: [1], // organizador no ve organizadores
+  2: [1, 2], // coorganizador no ve organizadores ni coorganizadores
+};
+
 const tabla = 'usuarios';
+
 export const usuarioService = {
   async getByEmail(
     email: string
@@ -137,5 +143,42 @@ export const usuarioService = {
     } catch (error) {
       return { data: null, error: error as Error };
     }
+  },
+  async getPaginatedUsers(
+    rolUsuarioActual: number,
+    page: number,
+    limit: number,
+    search?: string
+  ): Promise<Usuario[]> {
+    const filters = [
+      {
+        field: 'rol_id',
+        operator: 'not.in' as const,
+        value: rolesExcluidos[rolUsuarioActual] || [],
+      },
+    ];
+
+    const searchFields = ['nombre', 'apellidos', 'email'];
+
+    const rawUsuarios = await databaseService.getPaginatedData<any>(tabla, {
+      filters,
+      page,
+      limit,
+      search,
+      searchFields,
+    });
+
+    const usuarios: Usuario[] = rawUsuarios.map((u) => ({
+      id: u.id,
+      nombre: u.nombre,
+      apellidos: u.apellidos,
+      email: u.email,
+      rol_id: u.rol_id,
+      rol_nombre: u.roles?.nombre ?? '',
+      creado_en: u.creado_en,
+      activo: u.activo,
+    }));
+
+    return usuarios;
   },
 };

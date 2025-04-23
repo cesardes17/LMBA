@@ -4,6 +4,22 @@ import {
   ServiceSingleResponse,
 } from '../types/ServiceResponse';
 
+type Operator = 'eq' | 'neq' | 'in' | 'not.in';
+
+interface Filter {
+  field: string;
+  operator: Operator;
+  value: any;
+}
+
+interface PaginatedOptions {
+  filters?: Filter[];
+  search?: string;
+  searchFields?: string[];
+  page: number;
+  limit: number;
+}
+
 /**
  * Función auxiliar para manejar respuestas de array
  * @param operation - Promesa que devuelve datos en formato array y posible error
@@ -229,5 +245,17 @@ export const databaseService = {
     return handleArrayResponse(
       DatabaseSupabase.getWithRelations<T>(table, relationQuery)
     );
+  },
+  /**
+   * Obtiene datos paginados de una tabla con opciones de filtrado y búsqueda
+   * @param table - Nombre de la tabla
+   * @param options - Opciones de filtrado, búsqueda y paginación
+   * @returns Promesa con los datos y error
+   */
+  async getPaginatedData<T>(
+    table: string,
+    options: PaginatedOptions
+  ): Promise<T[]> {
+    return await DatabaseSupabase.getPaginatedData<T>(table, options);
   },
 };
