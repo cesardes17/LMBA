@@ -11,14 +11,19 @@ import {
   ClasificacionIcon,
   NavegacionIcon,
 } from '@/src/constants/icons';
+import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
 
 export default function TabsLayout() {
   const { authUser } = useAuth();
-  const { usuario } = useUserContext();
+  const { usuario, loading } = useUserContext();
   const { theme } = useTheme();
 
   const showLogin = !authUser;
   const showCompletarPerfil = authUser && !usuario;
+
+  if (loading) {
+    return <StyledActivityIndicator />;
+  }
 
   return (
     <Tabs
