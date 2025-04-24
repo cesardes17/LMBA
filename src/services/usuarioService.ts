@@ -49,7 +49,8 @@ export const usuarioService = {
   },
   async createUsuario(
     usuarioData: CompletarPerfilUsuario,
-    jugadorData: CompletarPerfilJugador | null
+    jugadorData: CompletarPerfilJugador | null,
+    imagenJugador: Blob | null
   ): Promise<{
     error: Error | null;
     status: 'success' | 'error';
@@ -71,9 +72,11 @@ export const usuarioService = {
         throw new Error('No se pudo crear el usuario');
       }
       console.log('usuario creado correctamente: ', data[0]);
-      if (jugadorData) {
-        const { data, error, status } =
-          await jugadorService.createJugador(jugadorData);
+      if (jugadorData && imagenJugador) {
+        const { data, error, status } = await jugadorService.createJugador(
+          jugadorData,
+          imagenJugador
+        );
         console.log('data: ', data);
         console.log('error: ', error);
         console.log('status: ', status);

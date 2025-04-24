@@ -37,3 +37,19 @@ export const ClasificacionIcon = ({ size = 24, color }: IconProps) => {
 export const NavegacionIcon = ({ size = 24, color }: IconProps) => {
   return <Entypo name='menu' size={size} color={color} />;
 };
+
+export const SubirImagenIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome5 name='image' size={size} color={color} />;
+};
+
+export const AlturaIcon = ({ size = 24, color }: IconProps) => {
+  return <Entypo name='ruler' size={size} color={color} />;
+};
+
+export const PesoIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome5 name='weight-hanging' size={size} color={color} />;
+};
+
+export const PosicionIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome5 name='user-tie' size={size} color={color} />;
+};

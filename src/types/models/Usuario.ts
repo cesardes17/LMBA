@@ -25,4 +25,6 @@ export interface Jugador {
   posicion_preferida: string;
   dorsal_preferido: number;
   descripcion: string;
+  foto_name: string;
+  sancion: number;
 }

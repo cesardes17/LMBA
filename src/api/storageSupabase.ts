@@ -10,6 +10,10 @@ export type ImageDeleteResponse = {
   error: string | null;
 };
 
+interface UploadImageResponse extends ImageResponse {
+  fileName: string | null;
+}
+
 export const StorageSupabase = {
   /**
    * Sube una imagen al bucket especificado.
@@ -22,18 +26,54 @@ export const StorageSupabase = {
     bucket: string,
     path: string,
     file: Blob
-  ): Promise<ImageResponse> {
+  ): Promise<UploadImageResponse> {
     try {
-      const { error } = await supabase.storage.from(bucket).upload(path, file, {
-        upsert: true, // Sobrescribe si ya existe
-        contentType: 'image/jpeg',
-      });
+      // Obtener la extensión basada en el tipo MIME del Blob
+      const mimeType = file.type;
+      let fileExtension = '.jpg'; // Por defecto
+
+      if (mimeType) {
+        switch (mimeType.toLowerCase()) {
+          case 'image/jpeg':
+          case 'image/jpg':
+            fileExtension = '.jpg';
+            break;
+          case 'image/png':
+            fileExtension = '.png';
+            break;
+          case 'image/gif':
+            fileExtension = '.gif';
+            break;
+          case 'image/webp':
+            fileExtension = '.webp';
+            break;
+          // Podemos añadir más casos según necesitemos
+        }
+      }
+
+      const randomFileName = `${crypto.randomUUID()}${fileExtension}`;
+
+      const { error } = await supabase.storage
+        .from(bucket)
+        .upload(randomFileName, file, {
+          upsert: true,
+          contentType: mimeType || 'image/jpeg',
+        });
 
       if (error) throw new Error(error.message);
 
-      return this.getPublicUrl(bucket, path);
+      const urlResponse = await this.getPublicUrl(bucket, randomFileName);
+
+      return {
+        ...urlResponse,
+        fileName: error ? null : randomFileName,
+      };
     } catch (error) {
-      return { data: null, error: (error as Error).message };
+      return {
+        data: null,
+        error: (error as Error).message,
+        fileName: null,
+      };
     }
   },
 
@@ -43,12 +83,17 @@ export const StorageSupabase = {
    * @param path - Ruta del archivo dentro del bucket.
    * @returns {Promise<ImageResponse>} - Objeto que contiene la URL pública de la imagen o un mensaje de error.
    */
-  async getPublicUrl(bucket: string, path: string): Promise<ImageResponse> {
+  async getPublicUrl(bucket: string, name: string): Promise<ImageResponse> {
     try {
-      const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+      const { data } = supabase.storage.from(bucket).getPublicUrl(name);
+
+      if (!data.publicUrl) {
+        throw new Error('No se pudo obtener la URL pública');
+      }
 
       return { data: data.publicUrl, error: null };
     } catch (error) {
+      console.error('Error al obtener la URL pública:', error);
       return { data: null, error: (error as Error).message };
     }
   },
