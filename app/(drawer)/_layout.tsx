@@ -6,8 +6,13 @@ import { useTheme } from '@/src/hooks/useTheme';
 
 export default function Layout() {
   const { authUser } = useAuth();
-  const { usuario } = useUserContext();
+  const { usuario, loading } = useUserContext();
   const { theme } = useTheme();
+
+  if (loading) {
+    return null;
+  }
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Drawer
@@ -45,6 +50,19 @@ export default function Layout() {
               : !usuario
                 ? 'Completar perfil'
                 : 'Perfil',
+          }}
+        />
+        <Drawer.Screen
+          name='administrarUsuarios'
+          options={{
+            title: 'Adminstrar Usuarios',
+            drawerItemStyle: {
+              display:
+                usuario?.rol_nombre &&
+                ['Organizador', 'Coorganizador'].includes(usuario.rol_nombre)
+                  ? 'flex'
+                  : 'none',
+            },
           }}
         />
       </Drawer>
