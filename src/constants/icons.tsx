@@ -3,6 +3,7 @@ import {
   Entypo,
   FontAwesome,
   FontAwesome5,
+  Ionicons,
   SimpleLineIcons,
 } from '@expo/vector-icons';
 interface IconProps {
@@ -51,5 +52,29 @@ export const PesoIcon = ({ size = 24, color }: IconProps) => {
 };
 
 export const PosicionIcon = ({ size = 24, color }: IconProps) => {
-  return <FontAwesome5 name='user-tie' size={size} color={color} />;
+  return <Ionicons name='basketball-outline' size={size} color={color} />;
+};
+
+export const ShieldIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome5 name='shield-alt' size={size} color={color} />;
+};
+
+export const UserIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome name='user' size={size} color={color} />;
+};
+
+export const ChevronDownIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome name='chevron-down' size={size} color={color} />;
+};
+
+export const EditIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome name='edit' size={size} color={color} />;
+};
+
+export const BanIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome name='ban' size={size} color={color} />;
+};
+
+export const CheckCircleIcon = ({ size = 24, color }: IconProps) => {
+  return <FontAwesome name='check-circle' size={size} color={color} />;
 };

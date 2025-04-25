@@ -1,4 +1,4 @@
-import PerfilCard from '@/src/components/auth/userInfo';
+import PerfilCard from '@/src/components/user/userInfo';
 import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
 import StyledButton from '@/src/components/common/StyledButton';
 import { useAuth } from '@/src/context/authContext';
@@ -8,12 +8,15 @@ import { Jugador } from '@/src/types/models/Usuario';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView } from 'react-native';
+import { useResponsiveWidth } from '@/src/hooks/useWidth';
 
 export default function PerfilScreen() {
   const { usuario, loading } = useUserContext();
   const { logout } = useAuth();
   const [loadingPlayer, setLoadingPlayer] = useState<boolean>(false);
   const [jugador, setJugador] = useState<Jugador | null>(null);
+  const responsiveWidth = useResponsiveWidth();
+
   useEffect(() => {
     if (usuario?.rol_nombre === 'Jugador') {
       setLoadingPlayer(true);
@@ -27,7 +30,6 @@ export default function PerfilScreen() {
           }
           if (!data) {
             setLoadingPlayer(false);
-
             return;
           }
           setJugador(data);
@@ -41,7 +43,18 @@ export default function PerfilScreen() {
   }
 
   return (
-    <ScrollView style={{ padding: 16, gap: 6 }}>
+    <ScrollView
+      style={{
+        padding: 16,
+        gap: 6,
+        width: '100%',
+        alignSelf: 'center',
+      }}
+      contentContainerStyle={{
+        width: responsiveWidth,
+        alignSelf: 'center',
+      }}
+    >
       <PerfilCard usuario={usuario} jugador={jugador} />
       <StyledButton
         onPress={async () => {

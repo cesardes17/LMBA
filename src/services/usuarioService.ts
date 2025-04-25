@@ -1,5 +1,5 @@
 import { CompletarPerfilJugador, CompletarPerfilUsuario } from '../types/auth';
-import { Usuario } from '../types/models/Usuario';
+import { Jugador, Usuario } from '../types/models/Usuario';
 import { databaseService } from './databaseService';
 import { jugadorService } from './jugadorService';
 
@@ -91,27 +91,7 @@ export const usuarioService = {
       return { error: error as Error, status: 'error' };
     }
   },
-  async getAllUsuarios(): Promise<{
-    data: Usuario[] | null;
-    error: Error | null;
-  }> {
-    try {
-      const relationQuery = '*, roles(nombre)';
-      const { data, error, status } =
-        await databaseService.getWithRelations<any>('usuarios', relationQuery);
-      if (status === 'error' && error) {
-        throw new Error(error.message);
-      }
-      // Mapear para devolver un array de Usuario con rol_nombre
-      const usuarios: Usuario[] = (data || []).map((u: any) => ({
-        ...u,
-        rol_nombre: u.roles?.nombre || '',
-      }));
-      return { data: usuarios, error: null };
-    } catch (error) {
-      return { data: null, error: error as Error };
-    }
-  },
+
   async updateBanStatus(id: string, banned: boolean) {
     try {
       const { data, error, status } = await databaseService.updateById(
@@ -183,5 +163,52 @@ export const usuarioService = {
     }));
 
     return usuarios;
+  },
+
+  async getUsuariosJugadores(): Promise<
+    {
+      usuario: Usuario;
+      jugador: Jugador;
+    }[]
+  > {
+    try {
+      const relationQuery = '*, roles(nombre), jugadores(*)';
+
+      const { data, error } = await databaseService.getWithRelations<any>(
+        tabla,
+        relationQuery
+      );
+      console.log('data: ', data);
+      console.log('error: ', error);
+
+      return [];
+    } catch (error) {
+      throw new Error(`Error al obtener usuarios jugadores: ${error}`);
+    }
+  },
+  async getUsuariosNoJugadores(userRol: number): Promise<Usuario[]> {
+    try {
+      const filters = [
+        {
+          field: 'rol_id',
+          operator: 'not.in' as const,
+          value: userRol === 2 ? [1, 2, 4, 5] : [1, 4, 5], // Excluir roles de jugador (4) y capitán (5)
+        },
+      ];
+
+      const data = await databaseService.getPaginatedData<Usuario>(tabla, {
+        filters,
+        page: 1,
+        limit: 100, // Un límite alto para obtener todos los usuarios
+      });
+      if (!data) {
+        throw new Error('No se encontraron usuarios');
+      }
+      console.log('data: ', data);
+
+      return data;
+    } catch (error) {
+      throw new Error(`Error al obtener usuarios no jugadores: ${error}`);
+    }
   },
 };

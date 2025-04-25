@@ -11,6 +11,7 @@ export const lightTheme: Theme = {
   textPrimary: colors.gray900,
   textSecondary: colors.gray600,
   textDisabled: colors.gray400,
+  textInverted: colors.white, // Add this line
 
   primary: colors.primary600,
   primaryLight: colors.primary300,
@@ -48,4 +49,6 @@ export const lightTheme: Theme = {
       checkIcon: colors.primary600,
     },
   },
+  backdrop: 'rgba(0, 0, 0, 0.5)',
+  shadow: colors.gray900,
 };

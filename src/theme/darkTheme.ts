@@ -12,6 +12,7 @@ export const darkTheme = {
   textPrimary: colors.white,
   textSecondary: colors.gray300,
   textDisabled: colors.gray600,
+  textInverted: colors.black, // Add this line
 
   primary: colors.primary600,
   primaryLight: colors.primary700,
@@ -49,6 +50,8 @@ export const darkTheme = {
       checkIcon: colors.primary300,
     },
   } satisfies SelectableCardStyles,
+  backdrop: 'rgba(0, 0, 0, 0.7)',
+  shadow: colors.gray900, // Changed from gray950 to gray900
 };
 
 export type Theme = typeof darkTheme;

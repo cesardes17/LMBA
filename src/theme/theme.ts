@@ -27,6 +27,7 @@ export type Theme = {
   textPrimary: string;
   textSecondary: string;
   textDisabled: string;
+  textInverted: string; // Add this line
 
   primary: string;
   primaryLight: string;
@@ -49,6 +50,8 @@ export type Theme = {
   inactiveElement: string;
 
   selectableCard: SelectableCardStyles;
+  backdrop: string;
+  shadow: string;
 };
 
 export const defaultTheme = lightTheme;
