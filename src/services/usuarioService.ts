@@ -172,16 +172,45 @@ export const usuarioService = {
     }[]
   > {
     try {
-      const relationQuery = '*, roles(nombre), jugadores(*)';
+      const filters = [
+        {
+          field: 'rol_id',
+          operator: 'in' as const,
+          value: [4, 5], // Incluir roles de jugador (4) y capitán (5)
+        },
+      ];
 
-      const { data, error } = await databaseService.getWithRelations<any>(
-        tabla,
-        relationQuery
-      );
-      console.log('data: ', data);
-      console.log('error: ', error);
+      // Modificar el select para incluir la relación con jugadores
+      const select = '*, roles(nombre), jugadores(*)';
 
-      return [];
+      const data = await databaseService.getPaginatedData<any>(tabla, {
+        filters,
+        page: 1,
+        limit: 100,
+        select: select,
+      });
+
+      if (!data) {
+        throw new Error('No se encontraron usuarios');
+      }
+
+      // Transformar los datos obtenidos incluyendo la información del jugador
+      const usuariosJugadores = data.map((user) => ({
+        usuario: {
+          id: user.id,
+          nombre: user.nombre,
+          apellidos: user.apellidos,
+          email: user.email,
+          rol_id: user.rol_id,
+          rol_nombre: user.roles?.nombre ?? '',
+          creado_en: user.creado_en,
+          activo: user.activo,
+        },
+        jugador: user.jugadores?.[0], // Obtener el primer jugador asociado
+      }));
+      console.log('usuariosJugadores: ', usuariosJugadores);
+
+      return usuariosJugadores;
     } catch (error) {
       throw new Error(`Error al obtener usuarios jugadores: ${error}`);
     }
@@ -195,11 +224,12 @@ export const usuarioService = {
           value: userRol === 2 ? [1, 2, 4, 5] : [1, 4, 5], // Excluir roles de jugador (4) y capitán (5)
         },
       ];
-
+      const select = '*, roles(nombre), jugadores(*)';
       const data = await databaseService.getPaginatedData<Usuario>(tabla, {
         filters,
         page: 1,
         limit: 100, // Un límite alto para obtener todos los usuarios
+        select: select,
       });
       if (!data) {
         throw new Error('No se encontraron usuarios');

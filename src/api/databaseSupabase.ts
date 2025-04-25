@@ -15,6 +15,7 @@ interface PaginatedOptions {
   searchFields?: string[];
   page: number;
   limit: number;
+  select?: string;
 }
 
 export type DBResponse<T> = {
@@ -110,9 +111,16 @@ export const DatabaseSupabase = {
   // Obtener datos paginados
   async getPaginatedData<T>(
     table: string,
-    { filters = [], search, searchFields = [], page, limit }: PaginatedOptions
+    {
+      filters = [],
+      search,
+      searchFields = [],
+      page,
+      limit,
+      select = '*',
+    }: PaginatedOptions
   ): Promise<T[]> {
-    let query = supabase.from(table).select('*, roles(nombre)');
+    let query = supabase.from(table).select(select);
 
     filters.forEach(({ field, operator, value }) => {
       if (operator === 'in') {

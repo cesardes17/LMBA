@@ -16,6 +16,7 @@ interface UserActionsModalProps {
   onBan: () => void;
   onPenalize?: () => void; // Nueva prop opcional para la función de sanción
   isBanned: boolean;
+  isSanctioned: boolean;
   user: Usuario | null;
 }
 
@@ -26,6 +27,7 @@ export function UserActionsModal({
   onBan,
   onPenalize,
   isBanned,
+  isSanctioned,
   user,
 }: UserActionsModalProps) {
   const { theme } = useTheme();
@@ -121,7 +123,7 @@ export function UserActionsModal({
               activeOpacity={0.7}
             >
               <StyledText style={[styles.text, styles.penalizeText]}>
-                Sancionar jugador
+                {isSanctioned ? 'Quitar sanción' : 'Sancionar jugador'}
               </StyledText>
             </TouchableOpacity>
           )}

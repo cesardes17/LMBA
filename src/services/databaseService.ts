@@ -18,6 +18,7 @@ interface PaginatedOptions {
   searchFields?: string[];
   page: number;
   limit: number;
+  select?: string;
 }
 
 /**

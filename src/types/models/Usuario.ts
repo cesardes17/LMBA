@@ -26,5 +26,5 @@ export interface Jugador {
   dorsal_preferido: number;
   descripcion: string;
   foto_name: string;
-  sancion: number;
+  sancionado: boolean; // Cambiado de 'sancion' a 'sancionado' para coincidir con la base de datos
 }

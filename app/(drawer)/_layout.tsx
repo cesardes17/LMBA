@@ -65,6 +65,19 @@ export default function Layout() {
             },
           }}
         />
+        <Drawer.Screen
+          name='administrarJugadores'
+          options={{
+            title: 'Adminstrar Jugadores',
+            drawerItemStyle: {
+              display:
+                usuario?.rol_nombre &&
+                ['Organizador', 'Coorganizador'].includes(usuario.rol_nombre)
+                  ? 'flex'
+                  : 'none',
+            },
+          }}
+        />
       </Drawer>
     </GestureHandlerRootView>
   );

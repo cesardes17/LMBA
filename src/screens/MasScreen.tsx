@@ -30,8 +30,15 @@ const rutas: RutaConfig[] = [
   {
     key: 'adminUsuarios',
     ruta: '/(admin)/listadoUsuarios',
-    nombre: 'Administrar usuarios',
+    nombre: 'Administrar Usuarios',
     descripcion: 'Gestiona los usuarios de la aplicación',
+    rolesPermitidos: ['Organizador', 'Coorganizador'],
+  },
+  {
+    key: 'adminJugadores',
+    ruta: '/(admin)/listadoJugadores',
+    nombre: 'Administrar Jugadores',
+    descripcion: 'Gestiona los jugadores de la aplicación',
     rolesPermitidos: ['Organizador', 'Coorganizador'],
   },
   {

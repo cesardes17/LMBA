@@ -3,9 +3,9 @@ import { useAuth } from '@/src/context/authContext';
 import { useUserContext } from '@/src/context/userContext';
 import PageContainer from '@/src/components/layout/PageContainer';
 import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
-import ListadoUsuariosScreen from '@/src/screens/admin/ListadoUsuariosScreen';
+import ListadoJugadoresScreen from '@/src/screens/admin/ListadoJugadoresScreen';
 
-export default function AdministrarUsuarios() {
+export default function AdministrarJugadores() {
   const router = useRouter();
   const { authUser } = useAuth();
   const { usuario, loading } = useUserContext();
@@ -24,7 +24,7 @@ export default function AdministrarUsuarios() {
 
   return (
     <PageContainer>
-      <ListadoUsuariosScreen />
+      <ListadoJugadoresScreen />
     </PageContainer>
   );
 }

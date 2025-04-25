@@ -92,4 +92,29 @@ export const jugadorService = {
       return { data: null, error: error as Error };
     }
   },
+  async actualizarSancionJugador(
+    id: number,
+    sancionado: boolean
+  ): Promise<{
+    success: boolean;
+    error: Error | null;
+  }> {
+    try {
+      const { data, status, error } = await databaseService.updateById(
+        tabla,
+        id,
+        { sancionado }
+      );
+      if (status === 'success' && data) {
+        return { success: true, error: null };
+      }
+      if (status === 'error' && error) {
+        throw new Error(error.message);
+      }
+
+      throw new Error('No se pudo actualizar el jugador');
+    } catch (error) {
+      return { success: false, error: error as Error };
+    }
+  },
 };
