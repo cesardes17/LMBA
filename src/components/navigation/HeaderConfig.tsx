@@ -1,19 +1,27 @@
-import { Stack, useRouter } from 'expo-router';
-import { Pressable, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Stack } from 'expo-router';
 import { useTheme } from '@/src/hooks/useTheme';
-import StyledText from '../common/StyledText';
 
 interface HeaderConfigProps {
   title: string;
   backLabel?: string;
   backRoute?: string;
+  animation?:
+    | 'default'
+    | 'fade'
+    | 'fade_from_bottom'
+    | 'flip'
+    | 'simple_push'
+    | 'slide_from_bottom'
+    | 'slide_from_right'
+    | 'slide_from_left'
+    | 'ios_from_right'
+    | 'ios_from_left'
+    | 'none';
 }
 
 export default function HeaderConfig({
   title,
   backLabel = 'Inicio',
-  backRoute = '/',
 }: HeaderConfigProps) {
   const { theme } = useTheme();
 
@@ -30,57 +38,8 @@ export default function HeaderConfig({
           fontWeight: 'bold',
           color: theme.textPrimary,
         },
-        headerLeft: () => (
-          <CustomBackButton
-            label={backLabel}
-            route={backRoute}
-            color={theme.textPrimary}
-          />
-        ),
+        headerBackTitle: backLabel,
       }}
     />
   );
 }
-
-interface CustomBackButtonProps {
-  route?: string;
-  label?: string;
-  color?: string;
-}
-
-function CustomBackButton({
-  route,
-  label,
-  color = '#000',
-}: CustomBackButtonProps) {
-  const router = useRouter();
-
-  const goBack = () => {
-    if (route) {
-      router.replace(route);
-    } else {
-      router.back();
-    }
-  };
-
-  return (
-    <Pressable style={stylesCustomBackButton.button} onPress={goBack}>
-      <Ionicons name='arrow-back' size={24} color={color} />
-      {label && (
-        <StyledText style={[stylesCustomBackButton.label]}>{label}</StyledText>
-      )}
-    </Pressable>
-  );
-}
-
-const stylesCustomBackButton = StyleSheet.create({
-  button: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-  },
-  label: {
-    fontSize: 16,
-    marginLeft: 4,
-  },
-});

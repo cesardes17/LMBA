@@ -82,6 +82,7 @@ export default function Layout() {
             },
           }}
         />
+        <Drawer.Screen name='ajustes' options={{ title: 'Ajustes' }} />
       </Drawer>
     </GestureHandlerRootView>
   );

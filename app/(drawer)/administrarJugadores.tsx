@@ -1,10 +1,22 @@
-import { useEffect } from 'react';
+import PageContainer from '@/src/components/layout/PageContainer';
+import { useUserContext } from '@/src/context/userContext';
+import ListadoJugadoresScreen from '@/src/screens/admin/ListadoJugadoresScreen';
 import { router } from 'expo-router';
 
-export default function AdministrarJugadores() {
-  useEffect(() => {
-    router.replace('/listadoJugadores');
-  }, []);
+export default function ListadoJugadoresPage() {
+  const { usuario } = useUserContext();
 
-  return null;
+  if (
+    !usuario ||
+    (usuario.rol_nombre !== 'Organizador' &&
+      usuario.rol_nombre !== 'Coorganizador')
+  ) {
+    return router.replace('/');
+  }
+
+  return (
+    <PageContainer>
+      <ListadoJugadoresScreen />
+    </PageContainer>
+  );
 }

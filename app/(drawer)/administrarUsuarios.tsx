@@ -1,10 +1,22 @@
-import { useEffect } from 'react';
+import PageContainer from '@/src/components/layout/PageContainer';
+import { useUserContext } from '@/src/context/userContext';
+import ListadoUsuariosScreen from '@/src/screens/admin/ListadoUsuariosScreen';
 import { router } from 'expo-router';
 
-export default function AdministrarUsuarios() {
-  useEffect(() => {
-    router.replace('/listadoUsuarios');
-  }, []);
+export default function ListadoUsuariosPage() {
+  const { usuario } = useUserContext();
 
-  return null;
+  if (
+    !usuario ||
+    (usuario.rol_nombre !== 'Organizador' &&
+      usuario.rol_nombre !== 'Coorganizador')
+  ) {
+    return router.replace('/');
+  }
+
+  return (
+    <PageContainer>
+      <ListadoUsuariosScreen />
+    </PageContainer>
+  );
 }
