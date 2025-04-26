@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
-
+import React, { useCallback, useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
 import UserCardsMobile from '@/src/components/admin/userList/UserCardsMobile';
 import { Usuario } from '@/src/types/models/Usuario';
 import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
@@ -8,6 +7,7 @@ import { usuarioService } from '@/src/services/usuarioService';
 import StyledAlert from '@/src/components/common/StyledAlert';
 import { useUserContext } from '@/src/context/userContext';
 import { router } from 'expo-router';
+import StyledTextInput from '@/src/components/common/StyledTextInput';
 
 export default function ListadoUsuariosScreen() {
   const [users, setUsers] = useState<Usuario[]>([]);
@@ -16,26 +16,18 @@ export default function ListadoUsuariosScreen() {
     error: false,
     message: '',
   });
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const { usuario, loading } = useUserContext();
-  // const { width } = useWindowDimensions();
 
-  // const isMobile = Platform.OS !== 'web' || width < 768;
-
-  useEffect(() => {
-    if (
-      !usuario ||
-      (usuario.rol_nombre !== 'Organizador' &&
-        usuario.rol_nombre !== 'Coorganizador')
-    ) {
-      return router.replace('/'); // Redirige a la página de inicio si no hay usuario en el contexto ap
-    }
-    if (loading) {
-      return;
-    }
-    const fetchUsers = async () => {
+  const fetchUsers = useCallback(
+    async (search?: string) => {
       try {
+        if (!usuario) {
+          return;
+        }
         const resultado = await usuarioService.getUsuariosNoJugadores(
-          usuario.rol_id
+          usuario.rol_id,
+          search
         );
         if (!resultado || resultado.length === 0) {
           throw new Error('No se encontraron usuarios');
@@ -46,10 +38,28 @@ export default function ListadoUsuariosScreen() {
         setLoading(false);
         setError({ error: true, message: (error as Error).message });
       }
-    };
+    },
+    [usuario]
+  );
 
+  useEffect(() => {
+    if (
+      !usuario ||
+      (usuario.rol_nombre !== 'Organizador' &&
+        usuario.rol_nombre !== 'Coorganizador')
+    ) {
+      return router.replace('/');
+    }
+    if (loading) {
+      return;
+    }
     fetchUsers();
-  }, [usuario, loading]); // Eliminada la dependencia error
+  }, [usuario, loading, fetchUsers]);
+
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    fetchUsers(text);
+  };
 
   if (isLoading || loading) {
     return <StyledActivityIndicator />;
@@ -59,9 +69,14 @@ export default function ListadoUsuariosScreen() {
   }
   return (
     <ScrollView style={{ padding: 16 }}>
+      <View style={{ marginBottom: 16 }}>
+        <StyledTextInput
+          placeholder='Buscar usuarios...'
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+      </View>
       <UserCardsMobile users={users} setUsers={setUsers} />
-
-      {/* <UserTableWeb users={users} setUsers={setUsers} /> */}
     </ScrollView>
   );
 }

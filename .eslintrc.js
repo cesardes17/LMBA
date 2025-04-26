@@ -8,7 +8,7 @@ module.exports = {
       {
         singleQuote: true,
         trailingComma: 'es5',
-        endOfLine: 'lf',
+        endOfLine: 'auto',
       },
     ],
     quotes: ['error', 'single', { avoidEscape: true }],

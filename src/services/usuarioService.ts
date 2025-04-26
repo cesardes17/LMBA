@@ -215,26 +215,33 @@ export const usuarioService = {
       throw new Error(`Error al obtener usuarios jugadores: ${error}`);
     }
   },
-  async getUsuariosNoJugadores(userRol: number): Promise<Usuario[]> {
+  async getUsuariosNoJugadores(
+    userRol: number,
+    search?: string
+  ): Promise<Usuario[]> {
     try {
       const filters = [
         {
           field: 'rol_id',
           operator: 'not.in' as const,
-          value: userRol === 2 ? [1, 2, 4, 5] : [1, 4, 5], // Excluir roles de jugador (4) y capitán (5)
+          value: userRol === 2 ? [1, 2, 4, 5] : [1, 4, 5],
         },
       ];
       const select = '*, roles(nombre), jugadores(*)';
+      const searchFields = ['nombre', 'apellidos', 'email'];
+
       const data = await databaseService.getPaginatedData<Usuario>(tabla, {
         filters,
         page: 1,
-        limit: 100, // Un límite alto para obtener todos los usuarios
+        limit: 100,
         select: select,
+        search,
+        searchFields,
       });
+
       if (!data) {
         throw new Error('No se encontraron usuarios');
       }
-      console.log('data: ', data);
 
       return data;
     } catch (error) {

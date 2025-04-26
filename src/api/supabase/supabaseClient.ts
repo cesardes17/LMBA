@@ -2,12 +2,17 @@
 import { createClient } from '@supabase/supabase-js';
 import 'react-native-url-polyfill/auto';
 import * as SecureStore from 'expo-secure-store';
-import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
-// Accedemos a las variables desde la configuración de la app
-const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl as string;
-const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey as string;
+// Access environment variables directly
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Missing Supabase environment variables. Please check your .env file and ensure EXPO_PUBLIC_SUPABASE_URL and EXPO_PUBLIC_SUPABASE_ANON_KEY are set.'
+  );
+}
 
 // Implementación de almacenamiento para entorno web
 class BrowserStorage {
@@ -62,6 +67,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     storage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: Platform.OS === 'web', // solo necesario en web
+    detectSessionInUrl: Platform.OS === 'web',
   },
 });
