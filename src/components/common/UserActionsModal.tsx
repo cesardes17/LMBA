@@ -8,6 +8,7 @@ import {
 import StyledText from './StyledText';
 import { Usuario } from '@/src/types/models/Usuario';
 import { useTheme } from '@/src/hooks/useTheme';
+import { CloseIcon } from '@/src/constants/icons';
 
 interface UserActionsModalProps {
   visible: boolean;
@@ -16,7 +17,7 @@ interface UserActionsModalProps {
   onBan: () => void;
   onPenalize?: () => void;
   isBanned: boolean;
-  isSanctioned: boolean;
+  isSanctioned?: boolean;
   user: Usuario | null;
 }
 
@@ -98,54 +99,71 @@ export function UserActionsModal({
   });
 
   return (
-    <Modal transparent visible={visible} animationType='fade'>
-      <View style={styles.backdrop}>
-        <View style={styles.container}>
-          <TouchableOpacity onPress={onClose} style={{ alignSelf: 'flex-end' }}>
-            <StyledText style={{ color: theme.error, fontWeight: 'bold' }}>
-              Cerrar
-            </StyledText>
-          </TouchableOpacity>
-
-          <View style={styles.header}>
-            <StyledText style={styles.headerText}>
-              {user?.email || 'Usuario'}
-            </StyledText>
-          </View>
-
-          <TouchableOpacity style={styles.action} onPress={onEdit}>
-            <StyledText style={styles.text}>Editar rol</StyledText>
-          </TouchableOpacity>
-
-          {user?.rol_nombre === 'Jugador' && onPenalize && (
-            <TouchableOpacity
-              style={[styles.action, styles.penalizeButton]}
-              onPress={onPenalize}
-            >
-              <StyledText style={[styles.text, styles.penalizeText]}>
-                {isSanctioned ? 'Quitar sanción' : 'Sancionar jugador'}
-              </StyledText>
-            </TouchableOpacity>
-          )}
-
+    <Modal
+      transparent
+      visible={visible}
+      animationType='fade'
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity
+        style={styles.backdrop}
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <View>
           <TouchableOpacity
-            style={[
-              styles.action,
-              !isBanned ? styles.banButton : styles.unbanButton,
-            ]}
-            onPress={onBan}
+            activeOpacity={1}
+            onPress={(e) => e.stopPropagation()}
           >
-            <StyledText
-              style={[
-                styles.text,
-                !isBanned ? styles.banText : styles.unbanText,
-              ]}
-            >
-              {isBanned ? 'Desbanear' : 'Banear'} usuario
-            </StyledText>
+            <View style={styles.container}>
+              <TouchableOpacity
+                onPress={onClose}
+                style={{ alignSelf: 'flex-end' }}
+              >
+                <CloseIcon color={theme.textPrimary} />
+              </TouchableOpacity>
+
+              <View style={styles.header}>
+                <StyledText style={styles.headerText}>
+                  {user?.email || 'Usuario'}
+                </StyledText>
+              </View>
+
+              <TouchableOpacity style={styles.action} onPress={onEdit}>
+                <StyledText style={styles.text}>Editar rol</StyledText>
+              </TouchableOpacity>
+
+              {user?.rol_nombre === 'Jugador' && onPenalize && (
+                <TouchableOpacity
+                  style={[styles.action, styles.penalizeButton]}
+                  onPress={onPenalize}
+                >
+                  <StyledText style={[styles.text, styles.penalizeText]}>
+                    {isSanctioned ? 'Quitar sanción' : 'Sancionar jugador'}
+                  </StyledText>
+                </TouchableOpacity>
+              )}
+
+              <TouchableOpacity
+                style={[
+                  styles.action,
+                  !isBanned ? styles.banButton : styles.unbanButton,
+                ]}
+                onPress={onBan}
+              >
+                <StyledText
+                  style={[
+                    styles.text,
+                    !isBanned ? styles.banText : styles.unbanText,
+                  ]}
+                >
+                  {isBanned ? 'Desbanear' : 'Banear'} usuario
+                </StyledText>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     </Modal>
   );
 }

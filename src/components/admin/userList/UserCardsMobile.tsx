@@ -10,6 +10,7 @@ import { Usuario } from '@/src/types/models/Usuario';
 import StyledText from '../../common/StyledText';
 import { UserActionsModal } from '../../common/UserActionsModal';
 import { useTheme } from '@/src/hooks/useTheme';
+import StyledAlert from '../../common/StyledAlert';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -18,9 +19,10 @@ if (Platform.OS === 'android') {
 type Props = {
   users: Usuario[];
   setUsers: React.Dispatch<React.SetStateAction<Usuario[]>>;
+  error: { error: boolean; message: string };
 };
 
-export default function UserCardsMobile({ users, setUsers }: Props) {
+export default function UserCardsMobile({ users, setUsers, error }: Props) {
   const [selectedUser, setSelectedUser] = useState<Usuario | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { theme } = useTheme();
@@ -45,6 +47,14 @@ export default function UserCardsMobile({ users, setUsers }: Props) {
     console.log('Editar rol de:', selectedUser?.nombre);
     setIsModalVisible(false);
   };
+
+  if (error.error) {
+    return (
+      <View style={styles.container}>
+        <StyledAlert variant='info'>{error.message}</StyledAlert>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

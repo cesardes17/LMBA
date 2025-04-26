@@ -2,6 +2,7 @@ import { SelectableCardGroup } from '@/src/components/common/SelectableCardGroup
 import StyledText from '@/src/components/common/StyledText';
 import { useTheme } from '@/src/hooks/useTheme';
 import { ScrollView } from 'react-native';
+import { useResponsiveWidth } from '@/src/hooks/useWidth';
 
 const themeOptions = [
   {
@@ -23,9 +24,16 @@ const themeOptions = [
 
 export default function AjustesScreen() {
   const { themePreference, setThemePreference } = useTheme();
+  const responsiveWidth = useResponsiveWidth();
 
   return (
-    <ScrollView style={{ padding: 16, gap: 6 }}>
+    <ScrollView
+      style={{ padding: 16, gap: 6 }}
+      contentContainerStyle={{
+        width: responsiveWidth,
+        alignSelf: 'center',
+      }}
+    >
       <StyledText style={{ textAlign: 'center' }}>
         Selecciona el tema de la aplicación aquí:
       </StyledText>

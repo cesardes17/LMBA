@@ -165,7 +165,7 @@ export const usuarioService = {
     return usuarios;
   },
 
-  async getUsuariosJugadores(): Promise<
+  async getUsuariosJugadores(search?: string): Promise<
     {
       usuario: Usuario;
       jugador: Jugador;
@@ -182,12 +182,15 @@ export const usuarioService = {
 
       // Modificar el select para incluir la relación con jugadores
       const select = '*, roles(nombre), jugadores(*)';
+      const searchFields = ['nombre', 'apellidos', 'email'];
 
       const data = await databaseService.getPaginatedData<any>(tabla, {
         filters,
         page: 1,
         limit: 100,
         select: select,
+        searchFields,
+        search,
       });
 
       if (!data) {

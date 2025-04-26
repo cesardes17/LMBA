@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  AntDesign,
   Entypo,
   FontAwesome,
   FontAwesome5,
@@ -77,4 +78,8 @@ export const BanIcon = ({ size = 24, color }: IconProps) => {
 
 export const CheckCircleIcon = ({ size = 24, color }: IconProps) => {
   return <FontAwesome name='check-circle' size={size} color={color} />;
+};
+
+export const CloseIcon = ({ size = 24, color }: IconProps) => {
+  return <AntDesign name='close' size={size} color={color} />;
 };

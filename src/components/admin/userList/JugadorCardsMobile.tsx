@@ -11,6 +11,7 @@ import StyledText from '../../common/StyledText';
 import { UserActionsModal } from '../../common/UserActionsModal';
 import { useTheme } from '@/src/hooks/useTheme';
 import { jugadorService } from '@/src/services/jugadorService';
+import StyledAlert from '../../common/StyledAlert';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -24,9 +25,10 @@ type UserJugador = {
 type Props = {
   users: UserJugador[];
   setUsers: React.Dispatch<React.SetStateAction<UserJugador[]>>;
+  error: { error: boolean; message: string };
 };
 
-export default function JugadorCardsMobile({ users, setUsers }: Props) {
+export default function JugadorCardsMobile({ users, setUsers, error }: Props) {
   const [selectedUser, setSelectedUser] = useState<UserJugador | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const { theme } = useTheme();
@@ -150,6 +152,10 @@ export default function JugadorCardsMobile({ users, setUsers }: Props) {
     () => users.map(renderJugadorCard),
     [users, renderJugadorCard]
   );
+
+  if (error.error) {
+    return <StyledAlert variant='info'> {error.message}</StyledAlert>;
+  }
 
   return (
     <View style={styles.container}>

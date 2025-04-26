@@ -17,24 +17,24 @@ export default function StyledAlert({
   const getVariantStyles = () => {
     const styles = {
       error: {
-        backgroundColor: '#FEF2F2',
-        borderColor: '#FCA5A5',
-        textColor: '#991B1B',
+        backgroundColor: `${theme.error}15`,
+        borderColor: theme.error,
+        textColor: theme.error,
       },
       warning: {
-        backgroundColor: '#FFFBEB',
-        borderColor: '#FCD34D',
-        textColor: '#92400E',
+        backgroundColor: `${theme.warning}15`,
+        borderColor: theme.warning,
+        textColor: theme.warning,
       },
       success: {
-        backgroundColor: '#F0FDF4',
-        borderColor: '#86EFAC',
-        textColor: '#166534',
+        backgroundColor: `${theme.success}15`,
+        borderColor: theme.success,
+        textColor: theme.success,
       },
       info: {
-        backgroundColor: '#EFF6FF',
-        borderColor: '#93C5FD',
-        textColor: '#1E40AF',
+        backgroundColor: `${theme.info}15`,
+        borderColor: theme.info,
+        textColor: theme.info,
       },
     };
     return styles[variant];

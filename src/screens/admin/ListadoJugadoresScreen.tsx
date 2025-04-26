@@ -1,58 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
+import { ScrollView, View } from 'react-native';
+import { useResponsiveWidth } from '@/src/hooks/useWidth';
 import { Jugador, Usuario } from '@/src/types/models/Usuario';
 import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
-import StyledAlert from '@/src/components/common/StyledAlert';
 import JugadorCardsMobile from '@/src/components/admin/userList/JugadorCardsMobile';
 import { usuarioService } from '@/src/services/usuarioService';
 import { useUserContext } from '@/src/context/userContext';
+import StyledTextInput from '@/src/components/common/StyledTextInput';
+import { router } from 'expo-router';
 
 export default function ListadoJugadoresScreen() {
-  const { usuario, loading: userLoading } = useUserContext();
-  const [users, setUsers] = useState<{ usuario: Usuario; jugador: Jugador }[]>(
-    []
-  );
-  const [isLoading, setIsLoading] = useState(true);
+  const responsiveWidth = useResponsiveWidth();
+  const [users, setUsers] = useState<
+    {
+      usuario: Usuario;
+      jugador: Jugador;
+    }[]
+  >([]);
+  const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<{ error: boolean; message: string }>({
     error: false,
     message: '',
   });
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const { usuario, loading } = useUserContext();
+
+  const fetchUsers = useCallback(
+    async (search?: string) => {
+      try {
+        if (!usuario) {
+          return;
+        }
+        const resultado = await usuarioService.getUsuariosJugadores(search);
+        if (!resultado || resultado.length === 0) {
+          if (search) {
+            throw new Error('No hay usuarios que coincidan con la búsqueda');
+          } else {
+            throw new Error('No se encontraron usuarios');
+          }
+        }
+        setError({ error: false, message: '' });
+        setUsers(resultado);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        setError({ error: true, message: (error as Error).message });
+      }
+    },
+    [usuario]
+  );
 
   useEffect(() => {
-    if (!usuario || userLoading) return;
-
-    const fetchUsers = async () => {
-      try {
-        const resultado = await usuarioService.getUsuariosJugadores();
-        if (!resultado || resultado.length === 0) {
-          throw new Error('No se encontraron usuarios');
-        }
-        setUsers(resultado);
-      } catch (err) {
-        setError({ error: true, message: (err as Error).message });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
+    if (
+      !usuario ||
+      (usuario.rol_nombre !== 'Organizador' &&
+        usuario.rol_nombre !== 'Coorganizador')
+    ) {
+      return router.replace('/');
+    }
+    if (loading) {
+      return;
+    }
     fetchUsers();
-  }, [usuario, userLoading]);
+  }, [usuario, loading, fetchUsers]);
 
-  if (userLoading || isLoading) {
+  const handleSearch = (text: string) => {
+    setSearchQuery(text);
+    fetchUsers(text);
+  };
+
+  if (isLoading || isLoading) {
     return <StyledActivityIndicator />;
   }
 
-  if (error.error || users.length === 0) {
-    return (
-      <StyledAlert>
-        {error.message || 'Error al cargar los usuarios'}
-      </StyledAlert>
-    );
-  }
-
   return (
-    <ScrollView style={{ padding: 16 }}>
-      <JugadorCardsMobile users={users} setUsers={setUsers} />
+    <ScrollView
+      style={{ padding: 16 }}
+      contentContainerStyle={{
+        width: responsiveWidth,
+        alignSelf: 'center',
+      }}
+    >
+      <View style={{ marginBottom: 16 }}>
+        <StyledTextInput
+          placeholder='Buscar usuarios...'
+          value={searchQuery}
+          onChangeText={handleSearch}
+        />
+      </View>
+      <JugadorCardsMobile users={users} setUsers={setUsers} error={error} />
     </ScrollView>
   );
 }

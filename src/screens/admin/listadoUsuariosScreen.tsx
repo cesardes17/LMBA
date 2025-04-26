@@ -1,15 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { ScrollView, View } from 'react-native';
+import { useResponsiveWidth } from '@/src/hooks/useWidth';
 import UserCardsMobile from '@/src/components/admin/userList/UserCardsMobile';
 import { Usuario } from '@/src/types/models/Usuario';
 import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
 import { usuarioService } from '@/src/services/usuarioService';
-import StyledAlert from '@/src/components/common/StyledAlert';
 import { useUserContext } from '@/src/context/userContext';
 import { router } from 'expo-router';
 import StyledTextInput from '@/src/components/common/StyledTextInput';
 
 export default function ListadoUsuariosScreen() {
+  const responsiveWidth = useResponsiveWidth();
   const [users, setUsers] = useState<Usuario[]>([]);
   const [isLoading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<{ error: boolean; message: string }>({
@@ -30,8 +31,13 @@ export default function ListadoUsuariosScreen() {
           search
         );
         if (!resultado || resultado.length === 0) {
-          throw new Error('No se encontraron usuarios');
+          if (search) {
+            throw new Error('No hay usuarios que coincidan con la búsqueda');
+          } else {
+            throw new Error('No se encontraron usuarios');
+          }
         }
+        setError({ error: false, message: '' });
         setUsers(resultado);
         setLoading(false);
       } catch (error) {
@@ -64,11 +70,15 @@ export default function ListadoUsuariosScreen() {
   if (isLoading || loading) {
     return <StyledActivityIndicator />;
   }
-  if (users.length === 0 || error.error) {
-    return <StyledAlert>Error al cargar los usuarios</StyledAlert>;
-  }
+
   return (
-    <ScrollView style={{ padding: 16 }}>
+    <ScrollView
+      style={{ padding: 16 }}
+      contentContainerStyle={{
+        width: responsiveWidth,
+        alignSelf: 'center',
+      }}
+    >
       <View style={{ marginBottom: 16 }}>
         <StyledTextInput
           placeholder='Buscar usuarios...'
@@ -76,7 +86,7 @@ export default function ListadoUsuariosScreen() {
           onChangeText={handleSearch}
         />
       </View>
-      <UserCardsMobile users={users} setUsers={setUsers} />
+      <UserCardsMobile users={users} setUsers={setUsers} error={error} />
     </ScrollView>
   );
 }
