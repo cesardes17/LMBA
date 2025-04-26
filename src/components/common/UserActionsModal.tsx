@@ -14,7 +14,7 @@ interface UserActionsModalProps {
   onClose: () => void;
   onEdit: () => void;
   onBan: () => void;
-  onPenalize?: () => void; // Nueva prop opcional para la función de sanción
+  onPenalize?: () => void;
   isBanned: boolean;
   isSanctioned: boolean;
   user: Usuario | null;
@@ -31,11 +31,12 @@ export function UserActionsModal({
   user,
 }: UserActionsModalProps) {
   const { theme } = useTheme();
+  const { width } = Dimensions.get('window');
 
   const styles = StyleSheet.create({
     backdrop: {
       flex: 1,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Using direct value instead of theme.backdrop
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -45,11 +46,8 @@ export function UserActionsModal({
       padding: 16,
       width: width * 0.8,
       maxWidth: 400,
-      shadowColor: '#000', // Using direct value instead of theme.shadow
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
       elevation: 5,
@@ -101,18 +99,21 @@ export function UserActionsModal({
 
   return (
     <Modal transparent visible={visible} animationType='fade'>
-      <TouchableOpacity style={styles.backdrop} onPress={onClose}>
+      <View style={styles.backdrop}>
         <View style={styles.container}>
+          <TouchableOpacity onPress={onClose} style={{ alignSelf: 'flex-end' }}>
+            <StyledText style={{ color: theme.error, fontWeight: 'bold' }}>
+              Cerrar
+            </StyledText>
+          </TouchableOpacity>
+
           <View style={styles.header}>
             <StyledText style={styles.headerText}>
               {user?.email || 'Usuario'}
             </StyledText>
           </View>
-          <TouchableOpacity
-            style={styles.action}
-            onPress={onEdit}
-            activeOpacity={0.7}
-          >
+
+          <TouchableOpacity style={styles.action} onPress={onEdit}>
             <StyledText style={styles.text}>Editar rol</StyledText>
           </TouchableOpacity>
 
@@ -120,7 +121,6 @@ export function UserActionsModal({
             <TouchableOpacity
               style={[styles.action, styles.penalizeButton]}
               onPress={onPenalize}
-              activeOpacity={0.7}
             >
               <StyledText style={[styles.text, styles.penalizeText]}>
                 {isSanctioned ? 'Quitar sanción' : 'Sancionar jugador'}
@@ -129,7 +129,6 @@ export function UserActionsModal({
           )}
 
           <TouchableOpacity
-            activeOpacity={0.7}
             style={[
               styles.action,
               !isBanned ? styles.banButton : styles.unbanButton,
@@ -146,9 +145,7 @@ export function UserActionsModal({
             </StyledText>
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     </Modal>
   );
 }
-
-const { width } = Dimensions.get('window');

@@ -3,14 +3,18 @@ import { Drawer } from 'expo-router/drawer';
 import { useAuth } from '@/src/context/authContext';
 import { useUserContext } from '@/src/context/userContext';
 import { useTheme } from '@/src/hooks/useTheme';
+import StyledActivityIndicator from '@/src/components/common/StyledActivitiIndicator';
 
 export default function Layout() {
   const { authUser } = useAuth();
   const { usuario, loading } = useUserContext();
   const { theme } = useTheme();
 
+  const showLogin = !authUser;
+  const showCompletarPerfil = authUser && !usuario;
+
   if (loading) {
-    return null;
+    return <StyledActivityIndicator />;
   }
 
   return (
@@ -45,9 +49,9 @@ export default function Layout() {
         <Drawer.Screen
           name='perfil-helper'
           options={{
-            title: !authUser
+            title: showLogin
               ? 'Login'
-              : !usuario
+              : showCompletarPerfil
                 ? 'Completar perfil'
                 : 'Perfil',
           }}

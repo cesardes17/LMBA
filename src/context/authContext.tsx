@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { AuthService } from '@/src/services/authService';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface AuthContextProps {
   authUser: any;
@@ -21,12 +22,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authloading, setAuthLoading] = useState(true);
   const [logoutInProgress, setLogoutInProgress] = useState(false);
 
+  const saveAuthData = async (user: any, sessionData: any) => {
+    try {
+      await AsyncStorage.setItem('authUser', JSON.stringify(user));
+      await AsyncStorage.setItem('session', JSON.stringify(sessionData));
+    } catch (error) {
+      console.error('Error guardando datos de autenticación:', error);
+    }
+  };
+
+  const clearAuthData = async () => {
+    try {
+      await AsyncStorage.removeItem('authUser');
+      await AsyncStorage.removeItem('session');
+    } catch (error) {
+      console.error('Error limpiando datos de autenticación:', error);
+    }
+  };
+
   const login = async (email: string, password: string) => {
     const res = await AuthService.login({ email, password });
     if (!res.error) {
       setAuthUser(res.user);
       const sessionRes = await AuthService.getSession();
       setSession(sessionRes.session);
+      await saveAuthData(res.user, sessionRes.session);
     }
     return res;
   };
@@ -37,6 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setAuthUser(res.user);
       const sessionRes = await AuthService.getSession();
       setSession(sessionRes.session);
+      await saveAuthData(res.user, sessionRes.session);
     }
     return res;
   };
@@ -46,18 +67,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await AuthService.logout();
     setAuthUser(null);
     setSession(null);
+    await clearAuthData();
     setLogoutInProgress(false);
-
-    // 🚀 Redirige tú manualmente
     router.replace('/');
   };
 
   useEffect(() => {
     const loadSession = async () => {
-      const { session } = await AuthService.getSession();
-      const { user } = await AuthService.getCurrentUser();
-      setSession(session);
-      setAuthUser(user);
+      try {
+        const storedUser = await AsyncStorage.getItem('authUser');
+        const storedSession = await AsyncStorage.getItem('session');
+
+        if (storedUser && storedSession) {
+          setAuthUser(JSON.parse(storedUser));
+          setSession(JSON.parse(storedSession));
+          setAuthLoading(false);
+          return;
+        }
+
+        const { session } = await AuthService.getSession();
+        const { user } = await AuthService.getCurrentUser();
+        setSession(session);
+        setAuthUser(user);
+        if (user && session) {
+          await saveAuthData(user, session);
+        }
+      } catch (error) {
+        console.error('Error cargando sesión:', error);
+      }
       setAuthLoading(false);
     };
     loadSession();

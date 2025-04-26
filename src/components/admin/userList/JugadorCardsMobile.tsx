@@ -10,7 +10,6 @@ import { Usuario, Jugador } from '@/src/types/models/Usuario';
 import StyledText from '../../common/StyledText';
 import { UserActionsModal } from '../../common/UserActionsModal';
 import { useTheme } from '@/src/hooks/useTheme';
-import { usuarioService } from '@/src/services/usuarioService';
 import { jugadorService } from '@/src/services/jugadorService';
 
 if (Platform.OS === 'android') {
@@ -54,7 +53,7 @@ export default function JugadorCardsMobile({ users, setUsers }: Props) {
     setIsModalVisible(false);
   }, [selectedUser]);
 
-  const handleSancionar = async () => {
+  const handleSancionar = useCallback(async () => {
     if (!selectedUser) return;
     const { error, success } = await jugadorService.actualizarSancionJugador(
       Number(selectedUser.jugador.id),
@@ -70,8 +69,8 @@ export default function JugadorCardsMobile({ users, setUsers }: Props) {
         : u
     );
     setUsers(updatedUsers);
-    setIsModalVisible(false); // Añadir esta línea para cerrar el modal
-  };
+    setIsModalVisible(false);
+  }, [selectedUser, users, setUsers]);
 
   const renderJugadorCard = useCallback(
     (userJugador: UserJugador) => (
@@ -100,7 +99,6 @@ export default function JugadorCardsMobile({ users, setUsers }: Props) {
             {userJugador.usuario.email}
           </StyledText>
 
-          {/* Información del jugador */}
           <View style={styles.jugadorInfo}>
             <StyledText variant='secondary' weight='bold'>
               Dorsal: {userJugador.jugador.dorsal_preferido}
@@ -158,7 +156,7 @@ export default function JugadorCardsMobile({ users, setUsers }: Props) {
       {memoizedCards}
       <UserActionsModal
         visible={isModalVisible}
-        onClose={() => setIsModalVisible(false)}
+        onClose={() => setTimeout(() => setIsModalVisible(false), 0)}
         onEdit={handleEditRole}
         onBan={handleBanToggle}
         isBanned={selectedUser?.usuario.activo === false}
@@ -179,10 +177,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
     elevation: 2,
