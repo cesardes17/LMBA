@@ -218,6 +218,7 @@ export const usuarioService = {
       throw new Error(`Error al obtener usuarios jugadores: ${error}`);
     }
   },
+
   async getUsuariosNoJugadores(
     userRol: number,
     search?: string
@@ -230,10 +231,10 @@ export const usuarioService = {
           value: userRol === 2 ? [1, 2, 4, 5] : [1, 4, 5],
         },
       ];
-      const select = '*, roles(nombre), jugadores(*)';
+      const select = '*, roles(nombre)';
       const searchFields = ['nombre', 'apellidos', 'email'];
 
-      const data = await databaseService.getPaginatedData<Usuario>(tabla, {
+      const data = await databaseService.getPaginatedData<any>(tabla, {
         filters,
         page: 1,
         limit: 100,
@@ -245,8 +246,18 @@ export const usuarioService = {
       if (!data) {
         throw new Error('No se encontraron usuarios');
       }
+      const usuariosJugadores = data.map((user) => ({
+        id: user.id,
+        nombre: user.nombre,
+        apellidos: user.apellidos,
+        email: user.email,
+        rol_id: user.rol_id,
+        rol_nombre: user.roles?.nombre ?? '',
+        creado_en: user.creado_en,
+        activo: user.activo,
+      }));
 
-      return data;
+      return usuariosJugadores;
     } catch (error) {
       throw new Error(`Error al obtener usuarios no jugadores: ${error}`);
     }

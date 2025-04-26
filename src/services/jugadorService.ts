@@ -103,8 +103,9 @@ export const jugadorService = {
       const { data, status, error } = await databaseService.updateById(
         tabla,
         id,
-        { sancionado }
+        { sancionado: sancionado }
       );
+      console.log('data: ', data);
       if (status === 'success' && data) {
         return { success: true, error: null };
       }

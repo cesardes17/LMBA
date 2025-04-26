@@ -12,6 +12,7 @@ import { UserActionsModal } from '../../common/UserActionsModal';
 import { useTheme } from '@/src/hooks/useTheme';
 import { jugadorService } from '@/src/services/jugadorService';
 import StyledAlert from '../../common/StyledAlert';
+import { usuarioService } from '@/src/services/usuarioService';
 
 if (Platform.OS === 'android') {
   UIManager.setLayoutAnimationEnabledExperimental?.(true);
@@ -38,16 +39,28 @@ export default function JugadorCardsMobile({ users, setUsers, error }: Props) {
     setIsModalVisible(true);
   };
 
-  const handleBanToggle = useCallback(() => {
+  const handleBanToggle = useCallback(async () => {
     if (!selectedUser) return;
-
-    const updatedUsers = users.map((u) =>
-      u.usuario.id === selectedUser.usuario.id
-        ? { ...u, usuario: { ...u.usuario, activo: !u.usuario.activo } }
-        : u
-    );
-    setUsers(updatedUsers);
-    setIsModalVisible(false);
+    try {
+      const { data, error } = await usuarioService.updateBanStatus(
+        selectedUser.usuario.id,
+        !selectedUser.usuario.activo
+      );
+      if (error || !data) {
+        throw error || new Error('Error al actualizar el estado de ban');
+      }
+    } catch (error) {
+      console.error('Error al actualizar el estado de ban:', error);
+      return;
+    } finally {
+      const updatedUsers = users.map((u) =>
+        u.usuario.id === selectedUser.usuario.id
+          ? { ...u, usuario: { ...u.usuario, activo: !u.usuario.activo } }
+          : u
+      );
+      setUsers(updatedUsers);
+      setIsModalVisible(false);
+    }
   }, [selectedUser, users, setUsers]);
 
   const handleEditRole = useCallback(() => {
@@ -83,11 +96,11 @@ export default function JugadorCardsMobile({ users, setUsers, error }: Props) {
           styles.card,
           {
             backgroundColor:
-              !userJugador.usuario.activo || !userJugador.jugador.sancionado
+              !userJugador.usuario.activo || userJugador.jugador.sancionado
                 ? theme.error + '10'
                 : theme.cardBackground,
             borderColor:
-              !userJugador.usuario.activo || !userJugador.jugador.sancionado
+              !userJugador.usuario.activo || userJugador.jugador.sancionado
                 ? theme.error + '30'
                 : theme.border,
           },
@@ -99,6 +112,9 @@ export default function JugadorCardsMobile({ users, setUsers, error }: Props) {
           </StyledText>
           <StyledText variant='secondary'>
             {userJugador.usuario.email}
+          </StyledText>
+          <StyledText variant='secondary'>
+            {userJugador.usuario.rol_nombre}
           </StyledText>
 
           <View style={styles.jugadorInfo}>
@@ -130,16 +146,16 @@ export default function JugadorCardsMobile({ users, setUsers, error }: Props) {
               style={[
                 styles.statusBadge,
                 {
-                  backgroundColor: !userJugador.jugador.sancionado
+                  backgroundColor: userJugador.jugador.sancionado
                     ? theme.error + '15'
                     : theme.success + '15',
-                  borderColor: !userJugador.jugador.sancionado
+                  borderColor: userJugador.jugador.sancionado
                     ? theme.error
                     : theme.success,
                 },
               ]}
             >
-              {!userJugador.jugador.sancionado ? 'Sancionado' : 'Sin Sanción'}
+              {userJugador.jugador.sancionado ? 'Sancionado' : 'Sin Sanción'}
             </StyledText>
           </View>
         </View>
@@ -166,7 +182,7 @@ export default function JugadorCardsMobile({ users, setUsers, error }: Props) {
         onEdit={handleEditRole}
         onBan={handleBanToggle}
         isBanned={selectedUser?.usuario.activo === false}
-        isSanctioned={selectedUser?.jugador.sancionado === false}
+        isSanctioned={selectedUser?.jugador.sancionado === true}
         user={selectedUser ? selectedUser.usuario : null}
         onPenalize={handleSancionar}
       />
